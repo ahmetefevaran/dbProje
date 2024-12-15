@@ -53,8 +53,8 @@
                                     <ComboBox fx:id="doktor_combobox" layoutX="50.0" layoutY="200.0" onAction="#doktor_combobox_on_action" prefHeight="30.0" prefWidth="400.0" promptText="-FARK ETMEZ-" />
                                     <Label layoutX="50.0" layoutY="65.0" prefHeight="30.0" prefWidth="400.0" text="* Poliklinik" />
                                     <Label layoutX="50.0" layoutY="165.0" prefHeight="30.0" prefWidth="400.0" text="Doktor:" />
-                                    <Label layoutX="50.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Başlangıç Zamanı Seçin:   YYYY-AA-GG" />
-                                    <Label layoutX="500.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Bitiş Zamanı Seçin:   YYYY-AA-GG" />
+                                    <Label layoutX="50.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Başlangıç Zamanı Seçin:   " />
+                                    <Label layoutX="500.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Bitiş Zamanı Seçin:   " />
                                     <Button fx:id="randevu_ara_button" layoutX="50.0" layoutY="375.0" mnemonicParsing="false" onAction="#randevu_ara_button_onaction" prefHeight="33.0" prefWidth="422.0" text="Randevu Ara">
                                        <font>
                                           <Font size="16.0" />
@@ -75,7 +75,7 @@
                                     </TableView>
                                     <Label fx:id="poliklinik_zorunludur_label" layoutX="500.0" layoutY="105.0" textFill="RED" />
                                     <Label fx:id="format_hatasi_label" layoutX="925.0" layoutY="315.0" textFill="RED" />
-                                    <DatePicker fx:id="randevu_sorgu_baslangıc_date" layoutX="50.0" layoutY="300.0" onAction="#baslangıc_date_onaction" prefHeight="35.0" prefWidth="400.0" promptText="-FARK ETMEZ-" />
+                                    <DatePicker fx:id="randevu_sorgu_baslangic_date" layoutX="50.0" layoutY="300.0" onAction="#baslangic_date_onaction" prefHeight="35.0" prefWidth="400.0" promptText="-FARK ETMEZ-" />
                                     <DatePicker fx:id="randevu_sorgu_bitis_date" layoutX="500.0" layoutY="300.0" onAction="#bitis_date_onaction" prefHeight="35.0" prefWidth="400.0" promptText="-FARK ETMEZ-" />
                                  </children></AnchorPane>
                         </content>
@@ -90,7 +90,7 @@
                                           <DatePicker fx:id="randevu_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
                                        </children>
                                     </HBox>
-                                      <TableView fx:id="tableView" prefHeight="300.0" prefWidth="900.0">
+                                      <TableView fx:id="randevu_tableView" prefHeight="300.0" prefWidth="900.0">
                                           <columns>
                                               <TableColumn fx:id="randevu_tarihColumn" prefWidth="225.0" text="Tarih" />
                                               <TableColumn fx:id="randevu_saatColumn" prefWidth="225.0" text="Saat" />
@@ -118,7 +118,7 @@
                                        </children>
                                     </HBox>
                                   <VBox alignment="TOP_LEFT" spacing="5">
-                                     <TableView fx:id="tahlilTableView" prefHeight="308.0" prefWidth="900.0">
+                                     <TableView fx:id="tahlil_tableView" prefHeight="308.0" prefWidth="900.0">
                                          <columns>
                                              <TableColumn fx:id="tahlil_tarihColumn" prefWidth="180.0" text="Tarih" />
                                              <TableColumn fx:id="tahlil_poliklinkColumn" prefWidth="180.0" text="Poliklink" />
@@ -137,7 +137,7 @@
                         <Tab text="Reçetelerim">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                  <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="900.0" spacing="25.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="50.0">
+                                  <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="900.0" spacing="25.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
                                       <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                           <DatePicker fx:id="recetelerim_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
                                           <DatePicker fx:id="recetelerim_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
@@ -146,7 +146,7 @@
                                              <Insets left="210.0" />
                                           </HBox.margin></TextField>
                                       </HBox>
-                                      <TableView fx:id="tableView" prefHeight="200">
+                                      <TableView fx:id="recetelerim_tableView" prefHeight="200">
                                           <columns>
                                               <TableColumn fx:id="recetelerim_tarihColumn" prefWidth="225.0" text="Tarih" />
                                               <TableColumn fx:id="recetelerim_doktorColumn" prefWidth="225.0" text="Doktor" />
@@ -165,9 +165,6 @@
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
-                                 <padding>
-                                    <Insets left="50.0" />
-                                 </padding>
 
                               </AnchorPane>
 

@@ -63,7 +63,7 @@ public class HastaAnasayfa {
     private TableColumn<?, ?> randevu_saatColumn;
 
     @FXML
-    private DatePicker randevu_sorgu_baslangıc_date;
+    private DatePicker randevu_sorgu_baslangic_date;
 
     @FXML
     private DatePicker randevu_sorgu_bitis_date;
@@ -114,10 +114,13 @@ public class HastaAnasayfa {
     private Button sifirla_button;
 
     @FXML
-    private TableView<?> tableView;
+    private TableView<?> randevu_tableView;
 
     @FXML
-    private TableView<?> tahlilTableView;
+    private TableView<?> tahlil_tableView;
+
+    @FXML
+    private TableView<?> recetelerim_tableView;
 
     @FXML
     private DatePicker tahlil_basla_tarih;
@@ -144,7 +147,7 @@ public class HastaAnasayfa {
     private TableColumn<?, ?> tahlil_tarihColumn;
 
     @FXML
-    void baslangıc_date_onaction(ActionEvent event) {
+    void baslangic_date_onaction(ActionEvent event) {
 
     }
 
@@ -198,7 +201,7 @@ public class HastaAnasayfa {
         assert randevu_iptalButton != null : "fx:id=\"randevu_iptalButton\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_poliklinikColumn != null : "fx:id=\"randevu_poliklinikColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_saatColumn != null : "fx:id=\"randevu_saatColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert randevu_sorgu_baslangıc_date != null : "fx:id=\"randevu_sorgu_baslangıc_date\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert randevu_sorgu_baslangic_date != null : "fx:id=\"randevu_sorgu_baslangic_date\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_sorgu_bitis_date != null : "fx:id=\"randevu_sorgu_bitis_date\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_sorgu_doktorColumn != null : "fx:id=\"randevu_sorgu_doktorColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_sorgu_poliklinkColumn != null : "fx:id=\"randevu_sorgu_poliklinkColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -215,8 +218,9 @@ public class HastaAnasayfa {
         assert recetelerim_ilacColumn != null : "fx:id=\"recetelerim_ilacColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_tarihColumn != null : "fx:id=\"recetelerim_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert sifirla_button != null : "fx:id=\"sifirla_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tableView != null : "fx:id=\"tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tahlilTableView != null : "fx:id=\"tahlilTableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert randevu_tableView != null : "fx:id=\"tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert recetelerim_tableView != null : "fx:id=\"tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert tahlil_tableView != null : "fx:id=\"tahlilTableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_basla_tarih != null : "fx:id=\"tahlil_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_bitis_tarih != null : "fx:id=\"tahlil_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_detay_area != null : "fx:id=\"tahlil_detay_area\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
