@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.doktorAnaSayfaController">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="1600.0">
+         <image>
+            <Image url="@../../../images/background_0.jpg" />
+         </image>
+      </ImageView>
+      <HBox prefHeight="900.0" prefWidth="1600.0">
+         <children>
+            <VBox maxWidth="80.0" prefHeight="200.0" prefWidth="80.0" spacing="15.0" />
+            <VBox prefHeight="200.0" prefWidth="1120.0">
+               <children>
+                   <TabPane prefHeight="869.0" prefWidth="1188.0" style="-fx-background-color: transparent;" tabClosingPolicy="UNAVAILABLE">
+                       <tabs>
+                           <!-- Randevular Tab -->
+                           <Tab text="randevular">
+                               <content>
+                                   <AnchorPane>
+                                       <TableView fx:id="randevularTable" layoutX="2.0" prefHeight="844.0" prefWidth="1120.0">
+                                           <columns>
+                                               <TableColumn fx:id="doctorColumn" prefWidth="304.0" text="Doktor Adı" />
+                                               <TableColumn fx:id="patientColumn" prefWidth="190.0" text="Hasta Adı" />
+                                               <TableColumn fx:id="dateColumn" prefWidth="166.0" text="Tarih" />
+                                               <TableColumn fx:id="timeColumn" prefWidth="189.0" text="Saat" />
+                                           </columns>
+                                       </TableView>
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                           <!-- Randevu Yönet Tab -->
+                           <Tab text="Randevu Yönet">
+                               <content>
+                                   <AnchorPane>
+                                       <TableView fx:id="randevuYonetTable" layoutX="-1.0" layoutY="-4.0" prefHeight="843.0" prefWidth="1120.0">
+                                           <columns>
+                                               <TableColumn fx:id="idRow" prefWidth="193.0" text="Randevu ID" />
+                                               <TableColumn fx:id="hastaAdiRow" prefWidth="286.0" text="Hasta Adı" />
+                                               <TableColumn fx:id="tarihColumn" prefWidth="368.0" text="Tarih" />
+                                               <TableColumn fx:id="durumColumn" prefWidth="272.0" text="Durum" />
+                                           </columns>
+                                       </TableView>
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                           <!-- Tahlil Sonuçları Tab -->
+                           <Tab text="Tahlil Sonuçları">
+                               <content>
+                                   <AnchorPane>
+                                       <TableView fx:id="tahlilSonucTable" layoutX="2.0" layoutY="-2.0" prefHeight="839.0" prefWidth="1120.0">
+                                           <columns>
+                                               <TableColumn prefWidth="354.0" text="Tahlil Adı" />
+                                               <TableColumn prefWidth="318.0" text="Sonuç" />
+                                               <TableColumn prefWidth="196.0" text="Tarih" />
+                                               <TableColumn prefWidth="251.0" text="Doktor Notu" />
+                                           </columns>
+                                       </TableView>
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                           <!-- Reçetelerim Tab -->
+                           <Tab text="Reçetelerim">
+                               <content>
+                                   <AnchorPane>
+                                       <TableView fx:id="recetelerimTable" layoutX="1.0" layoutY="-2.0" prefHeight="844.0" prefWidth="1120.0">
+                                           <columns>
+                                               <TableColumn prefWidth="125.0" text="İlaç Adı" />
+                                               <TableColumn prefWidth="140.0" text="Doz" />
+                                               <TableColumn prefWidth="247.0" text="Başlangıç Tarihi" />
+                                               <TableColumn prefWidth="442.0" text="Doktor" />
+                                               <TableColumn fx:id="buttonColumn" prefWidth="165.0" text="İşlem" />
+                                           </columns>
+                                       </TableView>
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                           <!-- Reçete Yaz Tab -->
+                           <Tab text="Reçete Yaz">
+                               <content>
+                                   <AnchorPane>
+                                       <!-- Hasta Adı -->
+                                       <Label layoutX="10.0" layoutY="10.0" text="Hasta Adı:" />
+                                       <TextField fx:id="hastaAdiField" layoutX="100.0" layoutY="10.0" prefWidth="200.0" />
+
+                                       <!-- İlaç Adı (ComboBox) -->
+                                       <Label layoutX="10.0" layoutY="50.0" text="İlaç Adı:" />
+                                       <ComboBox fx:id="ilacAdiComboBox" layoutX="100.0" layoutY="50.0" prefWidth="200.0" />
+
+                                       <!-- Doz -->
+                                       <Label layoutX="10.0" layoutY="90.0" text="Doz:" />
+                                       <TextField fx:id="dozField" layoutX="100.0" layoutY="90.0" prefWidth="200.0" />
+
+                                       <!-- Kaydet Butonu -->
+                                       <Button fx:id="kaydetBtn" layoutX="10.0" layoutY="130.0" text="Kaydet" />
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                       </tabs>
+                   </TabPane>
+
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="400.0" />
+         </children>
+      </HBox>
+   </children>
+</Pane>
