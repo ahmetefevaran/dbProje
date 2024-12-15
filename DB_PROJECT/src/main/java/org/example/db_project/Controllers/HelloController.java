@@ -52,39 +52,7 @@ public class HelloController {
     void giris_yap_button_clicked(ActionEvent event) {
 
 
-        // KULLANICI EKLEME OLARAK AYARLI
 
-        statusLabel.setText("Selam");
-
-
-        String name = tc_field.getText();
-        String email = password_field.getText();
-
-        if (name.isEmpty() || email.isEmpty()) {
-            statusLabel.setText("Ad ve e-posta gereklidir!");
-            return;
-        }
-
-        String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, email);
-
-            int rowsInserted = preparedStatement.executeUpdate();
-            if (rowsInserted > 0) {
-                statusLabel.setText("Kullanıcı başarıyla eklendi!");
-                tc_field.clear();
-                password_field.clear();
-            } else {
-                statusLabel.setText("Bir hata oluştu.");
-            }
-        } catch (SQLException e) {
-            statusLabel.setText("Veritabanı hatası: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     @FXML
