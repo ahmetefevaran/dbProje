@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.HastaAnasayfa">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="1600.0">
+         <image>
+            <Image url="@../../../images/background_0.jpg" />
+         </image>
+      </ImageView>
+      <HBox prefHeight="900.0" prefWidth="1600.0">
+         <children>
+            <VBox maxWidth="80.0" prefHeight="200.0" prefWidth="80.0" spacing="15.0" />
+            <VBox prefHeight="200.0" prefWidth="1120.0">
+               <children>
+                  <TabPane prefHeight="900.0" prefWidth="200.0" style="-fx-background-color: transparent;" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Randevu Al">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="369.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Randevu Yönet">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                        <Tab text="Tahlil Sonuçları">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                        <Tab text="Reçetelerim">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children></VBox>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="400.0" />
+         </children>
+      </HBox>
+   </children>
+</Pane>
