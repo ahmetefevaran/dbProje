@@ -12,6 +12,9 @@ import javafx.scene.control.Button;
 import javafx.util.Callback;
 import org.example.db_project.Appointment;
 import java.net.URL;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,6 +23,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.event.ActionEvent;
 
 public class doktorAnaSayfaController {
 
@@ -35,6 +39,9 @@ public class doktorAnaSayfaController {
     private URL location;
 
     @FXML
+    private TableColumn<?, ?> DozColumn;
+
+    @FXML
     private TableColumn<?, ?> buttonColumn;
 
     @FXML
@@ -47,7 +54,13 @@ public class doktorAnaSayfaController {
     private TextField hastaAdiField;
 
     @FXML
+    private TableColumn<?, ?> hastaAdiColumn;
+
+    @FXML
     private ComboBox<?> ilacAdiComboBox;
+
+    @FXML
+    private TableColumn<?, ?> ilacColumn;
 
     @FXML
     private Button kaydetBtn;
@@ -56,14 +69,16 @@ public class doktorAnaSayfaController {
     private TableColumn<?, ?> patientColumn;
 
     @FXML
+    private TableColumn<?, ?> policlinicCloumn;
+
+    @FXML
     private TableColumn<?, ?> policlinicColumn;
 
     @FXML
     private Button randevuYonetAraButton;
 
     @FXML
-    private TextField randevuYonetHastaAdInput11;
-
+    private TextField randevuYonetHastaAdInput;
 
     @FXML
     private DatePicker randevuYonetbaslangicTarihInput11;
@@ -93,10 +108,19 @@ public class doktorAnaSayfaController {
     private DatePicker recetelerimbaslangicTarihInput;
 
     @FXML
+    private TableColumn<?, ?> sonucColumn;
+
+    @FXML
+    private TableColumn<?, ?> startDateColumn;
+
+    @FXML
     private Button tahlilAraButton;
 
     @FXML
     private DatePicker tahlilBaslangicTarihInput;
+
+    @FXML
+    private TableColumn<?, ?> tahlilDateColumn;
 
     @FXML
     private TextField tahlilHastaAdInput;
@@ -109,6 +133,84 @@ public class doktorAnaSayfaController {
 
     @FXML
     private TableColumn<?, ?> timeColumn;
+
+    @FXML
+    private TextField randevuYonetDurumInput;
+
+
+    Connection connectToDatabase() throws SQLException {
+        String url = "jdbc:postgresql://localhost:5432/proje";
+        String user = "1";
+        String password = "1";
+        Connection conn = DriverManager.getConnection(url, user, password);
+        return conn;
+    }
+    @FXML
+    void kaydetButtonAction(ActionEvent event) {
+
+        String sql = "INSERT INTO medications (patient_id,doctor_id,medication_name,dosage_instructions,prescribed_at) VALUES(?,?,?,?,?)";
+
+        try (Connection conn =connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1,2);
+            pstmt.setInt(2,1);
+            pstmt.setString(3,"asd");
+            pstmt.setInt(4,5);
+            Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+            pstmt.setTimestamp(5, currentTimestamp);
+            int insertedRows = pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    void randevuYonetAraButtonAction(ActionEvent event) {
+        int doctorId = 1;
+        String hastaAdi = randevuYonetHastaAdInput.getText();
+
+        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name LIKE ? ";
+        try (Connection conn =connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1,doctorId);
+            pstmt.setString(2,"%"+hastaAdi+"%");
+            ResultSet rs = pstmt.executeQuery();
+            ObservableList<Appointment> liste = FXCollections.observableArrayList();
+            while (rs.next()) {
+                String id = rs.getString("appointment_id");
+                String patientName = rs.getString("patient_name");
+                String appointmentDate = rs.getString("appointment_date");
+                String appointmentTime = rs.getString("appointment_time");
+                String status = rs.getString("status");
+
+                // Appointment nesnesi oluştur ve listeye ekle
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime));
+            }
+            randevuYonetTable.setItems(liste);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void randevularAraButtonAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    void recetelerimAraButtonAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    void tahlilAraButtonAction(ActionEvent event) {
+
+    }
 
     @FXML
     void initialize() {
@@ -124,7 +226,7 @@ public class doktorAnaSayfaController {
         assert patientColumn != null : "fx:id=\"patientColumn\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert policlinicColumn != null : "fx:id=\"policlinicColumn\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevuYonetAraButton != null : "fx:id=\"randevuYonetAraButton\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
-        assert randevuYonetHastaAdInput11 != null : "fx:id=\"randevuYonetHastaAdInput11\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
+        assert randevuYonetHastaAdInput != null : "fx:id=\"randevuYonetHastaAdInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevuYonetTable != null : "fx:id=\"randevuYonetTable\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevuYonetbaslangicTarihInput11 != null : "fx:id=\"randevuYonetbaslangicTarihInput11\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevularAraButton1 != null : "fx:id=\"randevularAraButton1\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
@@ -150,6 +252,7 @@ public class doktorAnaSayfaController {
 
         // Durum sütunu için özel buton tanımlaması
         durumColumn.setCellFactory(new Callback<>() {
+            //Sil butonuna tıklanınca burası çalışıyor
             @Override
             public TableCell<Appointment, Void> call(final TableColumn<Appointment, Void> param) {
                 return new TableCell<>() {
