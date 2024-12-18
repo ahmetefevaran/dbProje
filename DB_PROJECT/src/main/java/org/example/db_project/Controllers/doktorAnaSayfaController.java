@@ -28,6 +28,8 @@ public class doktorAnaSayfaController {
     @FXML private TableColumn<Appointment, String> hastaAdiRow;
     @FXML private TableColumn<Appointment, String> tarihColumn;
     @FXML private TableColumn<Appointment, Void> durumColumn;
+
+
     @FXML
     private ResourceBundle resources;
 

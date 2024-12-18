@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -19,8 +21,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.HastaAnasayfa">
-   <children>
+<Pane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.hastaAnasayfaController">
+<children>
       <ImageView fitHeight="900.0" fitWidth="1600.0">
          <image>
             <Image url="@../../../images/background_0.jpg" />
@@ -30,14 +32,6 @@
          <children>
             <VBox maxWidth="80.0" prefHeight="200.0" prefWidth="80.0" spacing="15.0">
                <children>
-                  <ImageView fx:id="hastane_logo" accessibleRole="BUTTON" fitHeight="75.0" fitWidth="75.0" onMouseClicked="#hastane_logo_clicked" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/logo_0.png" />
-                     </image>
-                     <VBox.margin>
-                        <Insets top="25.0" />
-                     </VBox.margin>
-                  </ImageView>
                   <Button mnemonicParsing="false" style="-fx-background-color: transparan;" />
                </children>
             </VBox>
@@ -55,12 +49,12 @@
                                     <Label layoutX="50.0" layoutY="165.0" prefHeight="30.0" prefWidth="400.0" text="Doktor:" />
                                     <Label layoutX="50.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Başlangıç Zamanı Seçin:   " />
                                     <Label layoutX="500.0" layoutY="265.0" prefHeight="35.0" prefWidth="400.0" text=" Bitiş Zamanı Seçin:   " />
-                                    <Button fx:id="randevu_ara_button" layoutX="50.0" layoutY="375.0" mnemonicParsing="false" onAction="#randevu_ara_button_onaction" prefHeight="33.0" prefWidth="422.0" text="Randevu Ara">
+                                    <Button fx:id="randevu_ara_button" layoutX="50.0" layoutY="375.0" mnemonicParsing="false" onAction="#randevu_ara_button_onaction" prefHeight="35.0" prefWidth="422.0" text="Randevu Ara">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </Button>
-                                    <Button fx:id="sifirla_button" layoutX="478.0" layoutY="375.0" mnemonicParsing="false" onAction="#sifirla_button_action" prefHeight="33.0" prefWidth="423.0" style="-fx-background-color: red;" text="Sıfırla" textFill="WHITE">
+                                    <Button fx:id="sifirla_button" layoutX="478.0" layoutY="375.0" mnemonicParsing="false" onAction="#sifirla_button_action" prefHeight="35.0" prefWidth="423.0" style="-fx-background-color: red;" text="Sıfırla" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
@@ -83,26 +77,44 @@
                         <Tab style="-fx-background-image: ../../../images/randevu_al_icon.png;" text="Randevu Yönet">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                  <VBox alignment="TOP_CENTER" prefHeight="750.0" prefWidth="900.0" spacing="10" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
+                                  <VBox alignment="TOP_CENTER" prefHeight="750.0" prefWidth="1000.0" spacing="10" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
                                     <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                        <children>
                                           <DatePicker fx:id="randevu_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
                                           <DatePicker fx:id="randevu_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
+                                          <Button fx:id="ara_button" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                             <graphic>
+                                                <ImageView fitHeight="25.0" fitWidth="25.0">
+                                                   <image>
+                                                      <Image url="@../../../images/search_icon.png" />
+                                                   </image>
+                                                   <viewport>
+                                                      <Rectangle2D />
+                                                   </viewport>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
                                        </children>
                                     </HBox>
-                                      <TableView fx:id="randevu_tableView" prefHeight="300.0" prefWidth="900.0">
+                                      <TableView fx:id="randevu_tableView" prefHeight="300.0" prefWidth="1200.0">
                                           <columns>
-                                              <TableColumn fx:id="randevu_tarihColumn" prefWidth="225.0" text="Tarih" />
-                                              <TableColumn fx:id="randevu_saatColumn" prefWidth="225.0" text="Saat" />
-                                              <TableColumn fx:id="randevu_poliklinikColumn" prefWidth="225.0" text="Poliklinik" />
-                                              <TableColumn fx:id="randevu_doktorColumn" prefWidth="225.0" text="Doktor" />
+                                              <TableColumn fx:id="randevu_tarihColumn" prefWidth="200.0" text="Tarih" />
+                                              <TableColumn fx:id="randevu_poliklinikColumn" prefWidth="200.0" text="Poliklinik" />
+                                              <TableColumn fx:id="randevu_doktorColumn" prefWidth="200.0" text="Doktor" />
+                                              <TableColumn fx:id="randevu_durumColumn" prefWidth="200.0" text="Durum" />
+                                          <TableColumn fx:id="randevu_islemColumn" prefWidth="200.0" text="İşlem" />
                                           </columns>
                                       </TableView>
                                       <VBox alignment="TOP_LEFT" spacing="5">
                                           <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Randevu Detayları" />
                                           <TextArea fx:id="randevu_detaylar_area" editable="false" prefHeight="161.0" prefWidth="900.0" />
                                       </VBox>
-                                      <Button fx:id="randevu_iptalButton" text="Randevuyu İptal Et" />
                                   </VBox>
                             </AnchorPane>
                            </content>
@@ -110,21 +122,36 @@
                       <Tab text="Tahlil Sonuçları">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                              <VBox alignment="TOP_CENTER" prefHeight="750.0" prefWidth="900.0" spacing="10" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="750.0" prefWidth="1000.0" spacing="10" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
                                     <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                        <children>
                                           <DatePicker fx:id="tahlil_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
                                           <DatePicker fx:id="tahlil_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
+                                          <Button fx:id="ara_button1" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                             <graphic>
+                                                <ImageView fitHeight="25.0" fitWidth="25.0">
+                                                   <image>
+                                                      <Image url="@../../../images/search_icon.png" />
+                                                   </image>
+                                                   <viewport>
+                                                      <Rectangle2D />
+                                                   </viewport>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
                                        </children>
                                     </HBox>
                                   <VBox alignment="TOP_LEFT" spacing="5">
                                      <TableView fx:id="tahlil_tableView" prefHeight="308.0" prefWidth="900.0">
                                          <columns>
-                                             <TableColumn fx:id="tahlil_tarihColumn" prefWidth="180.0" text="Tarih" />
-                                             <TableColumn fx:id="tahlil_poliklinkColumn" prefWidth="180.0" text="Poliklink" />
-                                             <TableColumn fx:id="tahlil_doktorColumn" prefWidth="180.0" text="Doktor" />
-                                             <TableColumn fx:id="tahlil_sonucColumn" prefWidth="180.0" text="Sonuç" />
-                                             <TableColumn fx:id="tahlil_notColumn" prefWidth="180.0" text="Not" />
+                                             <TableColumn fx:id="tahlil_tarihColumn" prefWidth="200.0" text="Tarih" />
+                                             <TableColumn fx:id="tahlil_poliklinkColumn" prefWidth="200.0" text="Poliklink" />
+                                             <TableColumn fx:id="tahlil_doktorColumn" prefWidth="200.0" text="Doktor" />
+                                             <TableColumn fx:id="tahlil_sonucColumn" prefWidth="200.0" text="Sonuç" />
+                                             <TableColumn fx:id="tahlil_notColumn" prefWidth="200.0" text="Not" />
                                          </columns>
                                      </TableView>
                                       <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Tahlil Detayları" />
@@ -137,21 +164,36 @@
                         <Tab text="Reçetelerim">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                  <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="900.0" spacing="25.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
+                                  <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="1000.0" spacing="25.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
                                       <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                           <DatePicker fx:id="recetelerim_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
                                           <DatePicker fx:id="recetelerim_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
                                           <TextField fx:id="recetelerim_arama_kismi" prefHeight="35.0" prefWidth="200.0" promptText="İlaç adına göre ara...">
                                           <HBox.margin>
-                                             <Insets left="210.0" />
+                                             <Insets />
                                           </HBox.margin></TextField>
+                                       <Button fx:id="ara_button2" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
+                                          <font>
+                                             <Font size="16.0" />
+                                          </font>
+                                          <graphic>
+                                             <ImageView fitHeight="25.0" fitWidth="25.0">
+                                                <image>
+                                                   <Image url="@../../../images/search_icon.png" />
+                                                </image>
+                                                <viewport>
+                                                   <Rectangle2D />
+                                                </viewport>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
                                       </HBox>
                                       <TableView fx:id="recetelerim_tableView" prefHeight="200">
                                           <columns>
-                                              <TableColumn fx:id="recetelerim_tarihColumn" prefWidth="225.0" text="Tarih" />
-                                              <TableColumn fx:id="recetelerim_doktorColumn" prefWidth="225.0" text="Doktor" />
-                                              <TableColumn fx:id="recetelerim_ilacColumn" prefWidth="225.0" text="İlaç" />
-                                              <TableColumn fx:id="recetelerim_dozColumn" prefWidth="225.0" text="Doz" />
+                                              <TableColumn fx:id="recetelerim_tarihColumn" prefWidth="250.0" text="Tarih" />
+                                              <TableColumn fx:id="recetelerim_doktorColumn" prefWidth="250.0" text="Doktor" />
+                                              <TableColumn fx:id="recetelerim_ilacColumn" prefWidth="250.0" text="İlaç" />
+                                              <TableColumn fx:id="recetelerim_dozColumn" prefWidth="250.0" text="Doz" />
                                           </columns>
                                       </TableView>
                                       <VBox alignment="TOP_LEFT" spacing="5">
@@ -173,7 +215,197 @@
                     </tabs>
                   </TabPane>
                </children></VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="400.0" />
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="400.0">
+               <children>
+                  <SplitPane fx:id="yan_panel" dividerPositions="0.45" orientation="VERTICAL" prefHeight="900.0" prefWidth="400.0" style="-fx-background-color: transparent;">
+                    <items>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="400.0" prefWidth="400.0">
+                                 <children>
+                                    <HBox prefHeight="120.0" prefWidth="200.0">
+                                       <children>
+                                          <ImageView fx:id="panel_hasta_image" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </ImageView>
+                                          <VBox prefHeight="100.0" prefWidth="300.0">
+                                             <children>
+                                                <Label fx:id="panel_hasta_ad_label" prefHeight="40.0" prefWidth="346.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" top="5.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="13.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="panel_hasta_soyad_label" prefHeight="40.0" prefWidth="346.0" text="Burada Soyad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" top="5.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="13.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="panel_hasta_tc_label" prefHeight="40.0" prefWidth="346.0" text="Burada TC Numarası Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox prefHeight="228.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Doğum Tarihi:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Kan Grubu:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Cinsiyet:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Email:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Adres:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Telefon No:">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="300.0">
+                                             <children>
+                                                <Label fx:id="panel_dogum_tarihi" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label fx:id="panel_kan_grubu" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label fx:id="panel_cinsiyet" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label fx:id="panel_email" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label fx:id="panel_adres" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label fx:id="panel_tel_no" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox prefHeight="52.0" prefWidth="400.0">
+                                       <children>
+                                          <Button fx:id="panel_duzenle_button" mnemonicParsing="false" prefHeight="35.0" prefWidth="175.0" text="DÜZENLE">
+                                             <HBox.margin>
+                                                <Insets left="15.0" top="10.0" />
+                                             </HBox.margin>
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Button>
+                                          <Button fx:id="panel_cikis_button" mnemonicParsing="false" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: red;" text="ÇIKIŞ" textFill="WHITE">
+                                             <HBox.margin>
+                                                <Insets left="20.0" top="10.0" />
+                                             </HBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </Pane>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="720.0" prefWidth="400.0">
+                                 <children>
+                                    <VBox fx:id="panel_yaklasan_randevular_vbox" prefHeight="100.0" prefWidth="400.0">
+                                       <children>
+                                          <Label prefHeight="50.0" prefWidth="200.0" text="Yaklaşan Randevular">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <VBox fx:id="panel_yeni_recete_vbox" prefHeight="100.0" prefWidth="400.0">
+                                       <children>
+                                          <Label prefHeight="50.0" prefWidth="200.0" text="Yeni Reçeteler">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </Pane>
+                    </items>
+                  </SplitPane>
+               </children></VBox>
          </children>
       </HBox>
    </children>
