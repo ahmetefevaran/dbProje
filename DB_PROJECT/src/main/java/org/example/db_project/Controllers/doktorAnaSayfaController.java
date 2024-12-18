@@ -153,7 +153,7 @@ public class doktorAnaSayfaController {
             @Override
             public TableCell<Appointment, Void> call(final TableColumn<Appointment, Void> param) {
                 return new TableCell<>() {
-                    private final Button button = new Button("Sil");
+                    private final Button button = new Button("Randevuyu İptal Et");
 
                     {
                         button.setOnAction(event -> {
