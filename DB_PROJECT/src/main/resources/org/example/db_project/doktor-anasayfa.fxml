@@ -37,14 +37,16 @@
                                        <TableView fx:id="randevularTable" layoutX="2.0" layoutY="161.0" prefHeight="683.0" prefWidth="1120.0">
                                            <columns>
                                                <TableColumn fx:id="policlinicColumn" prefWidth="304.0" text="Poliklinik" />
-                                               <TableColumn fx:id="patientColumn" prefWidth="216.0" text="Hasta Adı" />
-                                               <TableColumn fx:id="dateColumn" prefWidth="229.0" text="Tarih" />
-                                               <TableColumn fx:id="timeColumn" prefWidth="370.0" text="Saat" />
+                                               <TableColumn fx:id="patientColumn" minWidth="0.0" prefWidth="237.0" text="Hasta Adı" />
+                                               <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="267.0" text="Tarih" />
+                                               <TableColumn fx:id="timeColumn" minWidth="0.0" prefWidth="162.0" text="Saat" />
+                                       <TableColumn fx:id="randevularDurumColumn" minWidth="0.0" prefWidth="149.0" text="Tamamlanma Durumu" />
                                            </columns>
                                        </TableView>
                                  <DatePicker fx:id="randevularBaslangicTarihInput1" layoutX="23.0" layoutY="97.0" promptText="Başlangıç Tarihi" />
                                  <TextField fx:id="randevularHastaAdInput1" layoutX="255.0" layoutY="97.0" promptText="Hasta Adı" />
-                                 <Button fx:id="randevularAraButton1" layoutX="449.0" layoutY="97.0" mnemonicParsing="false" onAction="#randevularAraButtonAction" prefHeight="25.0" prefWidth="121.0" text="Ara" />
+                                 <Button fx:id="randevularAraButton1" layoutX="625.0" layoutY="97.0" mnemonicParsing="false" onAction="#randevularAraButtonAction" prefHeight="25.0" prefWidth="121.0" text="Ara" />
+                                 <TextField fx:id="randevularDurumInput" layoutX="443.0" layoutY="97.0" promptText="Tamamlanma Durumu" />
                                    </AnchorPane>
                                </content>
                            </Tab>
@@ -61,10 +63,9 @@
                                                <TableColumn fx:id="durumColumn" prefWidth="272.0" text="Durum" />
                                            </columns>
                                        </TableView>
-                                 <DatePicker fx:id="randevuYonetbaslangicTarihInput11" layoutX="14.0" layoutY="37.0" promptText="Başlangıç Tarihi" />
+                                 <DatePicker fx:id="randevuYonetbaslangicTarihInput" layoutX="14.0" layoutY="37.0" promptText="Başlangıç Tarihi" />
                                  <TextField fx:id="randevuYonetHastaAdInput" layoutX="261.0" layoutY="37.0" promptText="Hasta Adı" />
-                                 <Button fx:id="randevuYonetAraButton" layoutX="642.0" layoutY="37.0" mnemonicParsing="false" onAction="#randevuYonetAraButtonAction" prefHeight="25.0" prefWidth="121.0" text="Ara" />
-                                 <TextField fx:id="randevuYonetDurumInput" layoutX="436.0" layoutY="37.0" promptText="Tamamlanma Durumu" />
+                                 <Button fx:id="randevuYonetAraButton" layoutX="478.0" layoutY="37.0" mnemonicParsing="false" onAction="#randevuYonetAraButtonAction" prefHeight="25.0" prefWidth="121.0" text="Ara" />
                                    </AnchorPane>
                                </content>
                            </Tab>
