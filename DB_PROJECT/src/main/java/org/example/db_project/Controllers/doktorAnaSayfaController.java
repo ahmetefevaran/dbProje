@@ -13,6 +13,7 @@ import javafx.util.Callback;
 import org.example.db_project.Appointment;
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -83,7 +84,7 @@ public class doktorAnaSayfaController {
     private TextField randevuYonetHastaAdInput;
 
     @FXML
-    private DatePicker randevuYonetbaslangicTarihInput11;
+    private DatePicker randevuYonetbaslangicTarihInput;
 
     @FXML
     private Button randevularAraButton1;
@@ -137,7 +138,10 @@ public class doktorAnaSayfaController {
     private TableColumn<?, ?> timeColumn;
 
     @FXML
-    private TextField randevuYonetDurumInput;
+    private TableColumn<?, ?> randevularDurumColumn;
+
+    @FXML
+    private TextField randevularDurumInput;
 
 
     Connection connectToDatabase() throws SQLException {
@@ -172,12 +176,16 @@ public class doktorAnaSayfaController {
     void randevuYonetAraButtonAction(ActionEvent event) {
         int doctorId = 1;
         String hastaAdi = randevuYonetHastaAdInput.getText();
+        LocalDate selectedDate = randevuYonetbaslangicTarihInput.getValue();
 
-        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name LIKE ? ";
+        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name LIKE ? AND appointment_date >= ? AND status = 'planned'";
         try (Connection conn =connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            if (selectedDate == null) selectedDate = LocalDate.now();
+
             pstmt.setInt(1,doctorId);
             pstmt.setString(2,"%"+hastaAdi+"%");
+            pstmt.setTimestamp(3, Timestamp.valueOf(selectedDate.atStartOfDay()));
             ResultSet rs = pstmt.executeQuery();
             ObservableList<Appointment> liste = FXCollections.observableArrayList();
             while (rs.next()) {
@@ -185,7 +193,7 @@ public class doktorAnaSayfaController {
                 String patientName = rs.getString("patient_name");
                 String appointmentDate = rs.getString("appointment_date");
                 String appointmentTime = rs.getString("appointment_time");
-                String status = rs.getString("status");
+
 
                 // Appointment nesnesi oluştur ve listeye ekle
                 liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime));
@@ -230,7 +238,7 @@ public class doktorAnaSayfaController {
         assert randevuYonetAraButton != null : "fx:id=\"randevuYonetAraButton\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevuYonetHastaAdInput != null : "fx:id=\"randevuYonetHastaAdInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevuYonetTable != null : "fx:id=\"randevuYonetTable\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
-        assert randevuYonetbaslangicTarihInput11 != null : "fx:id=\"randevuYonetbaslangicTarihInput11\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
+        assert randevuYonetbaslangicTarihInput != null : "fx:id=\"randevuYonetbaslangicTarihInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevularAraButton1 != null : "fx:id=\"randevularAraButton1\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevularBaslangicTarihInput1 != null : "fx:id=\"randevularBaslangicTarihInput1\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevularHastaAdInput1 != null : "fx:id=\"randevularHastaAdInput1\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
