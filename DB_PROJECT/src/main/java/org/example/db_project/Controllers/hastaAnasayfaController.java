@@ -1,7 +1,7 @@
 package org.example.db_project.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,7 +18,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.example.db_project.Appointment;
 
+import java.sql.*;
+import java.time.LocalDate;
+
 public class hastaAnasayfaController {
+
+    Connection connectToDatabase() throws SQLException {
+        String url = "jdbc:postgresql://localhost:5432/proje";
+        String user = "1";
+        String password = "1";
+        Connection con = DriverManager.getConnection(url, user, password);
+        return con;
+    }
 
 
     @FXML private TableColumn<?, ?> randevu_sorgu_doktorColumn;
@@ -51,10 +62,6 @@ public class hastaAnasayfaController {
     @FXML private TableView<?> recetelerim_tableView;
 
 
-    @FXML private ResourceBundle resources;
-    @FXML private URL location;
-
-
     @FXML private Button panel_cikis_button;
     @FXML private Label panel_hasta_ad_label;
     @FXML private ImageView panel_hasta_image;
@@ -74,7 +81,7 @@ public class hastaAnasayfaController {
 
     @FXML private ComboBox<?> doktor_combobox;
     @FXML private Label format_hatasi_label;
-    @FXML private ComboBox<?> polikinlik_combobox;
+    @FXML private ComboBox<String> polikinlik_combobox;
     @FXML private Label poliklinik_zorunludur_label;
     @FXML private Button randevu_ara_button;
     @FXML private DatePicker randevu_sorgu_bitis_date;
@@ -104,6 +111,7 @@ public class hastaAnasayfaController {
     @FXML
     void initialize() {
 
+        // ----- Yan Panel -----
         assert yan_panel != null : "fx:id=\"yan_panel\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_adres != null : "fx:id=\"panel_adres\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_cikis_button != null : "fx:id=\"panel_cikis_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -120,12 +128,23 @@ public class hastaAnasayfaController {
         assert panel_yaklasan_randevular_vbox != null : "fx:id=\"panel_yaklasan_randevular_vbox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_yeni_recete_vbox != null : "fx:id=\"panel_yeni_recete_vbox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
+        // ----- Randevu Sorgu -----
+        ObservableList<String> poliklinikler = FXCollections.observableArrayList(
+                "Kardiyoloji",
+                "Ortopedi",
+                "Dahiliye",
+                "Nöroloji",
+                "Üroloji",
+                "Göz Hastalıkları",
+                "Kulak Burun Boğaz",
+                "Dermatoloji"
+        );
+        polikinlik_combobox.setItems(poliklinikler);
 
         assert sifirla_button != null : "fx:id=\"sifirla_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert format_hatasi_label != null : "fx:id=\"format_hatasi_label\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_ara_button != null : "fx:id=\"randevu_ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert doktor_combobox != null : "fx:id=\"doktor_combobox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert polikinlik_combobox != null : "fx:id=\"polikinlik_combobox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert poliklinik_zorunludur_label != null : "fx:id=\"poliklinik_zorunludur_label\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_sorgu_baslangic_date != null : "fx:id=\"randevu_sorgu_baslangic_date\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_sorgu_bitis_date != null : "fx:id=\"randevu_sorgu_bitis_date\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -136,6 +155,7 @@ public class hastaAnasayfaController {
         assert randevu_sorgu_tarihColumn != null : "fx:id=\"randevu_sorgu_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
 
+        // ----- Randevu Yönet -----
         assert ara_button != null : "fx:id=\"ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_basla_tarih != null : "fx:id=\"randevu_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_bitis_tarih != null : "fx:id=\"randevu_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -149,6 +169,7 @@ public class hastaAnasayfaController {
         assert recete_detay_area != null : "fx:id=\"recete_detay_area\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
 
+        // ----- Tahlil -----
         assert ara_button1 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_basla_tarih != null : "fx:id=\"tahlil_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_bitis_tarih != null : "fx:id=\"tahlil_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -161,6 +182,7 @@ public class hastaAnasayfaController {
         assert tahlil_tarihColumn != null : "fx:id=\"tahlil_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
 
+        // ----- Reçeteler -----
         assert ara_button2 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_arama_kismi != null : "fx:id=\"recetelerim_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_basla_tarih != null : "fx:id=\"recetelerim_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -192,6 +214,41 @@ public class hastaAnasayfaController {
     @FXML
     void polikinlik_combobox_on_action(ActionEvent event) {
 
+        String selectedPoliklinik = polikinlik_combobox.getValue();
+        System.out.println("Seçilen Poliklinik: " + selectedPoliklinik);
+
+
+        String sql = "SELECT * FROM doctors WHERE specialization ILIKE ? ";
+        try (Connection conn =connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             pstmt.setString(1, selectedPoliklinik);
+
+
+
+
+
+
+            ResultSet rs = pstmt.executeQuery();
+
+            ObservableList<Appointment> liste = FXCollections.observableArrayList();
+            while (rs.next()) {
+                String id = rs.getString("appointment_id");
+
+                // Appointment nesnesi oluştur ve listeye ekle
+                liste.add(new Appointment(id,"1","1", "1", "1"));
+            }
+
+
+
+
+
+
+            doktor_combobox.setItems();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
