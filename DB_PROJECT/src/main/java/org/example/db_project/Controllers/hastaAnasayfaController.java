@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.example.db_project.Appointment;
+import org.example.db_project.Doctors;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -79,7 +80,7 @@ public class hastaAnasayfaController {
     @FXML private SplitPane yan_panel;
 
 
-    @FXML private ComboBox<?> doktor_combobox;
+    @FXML private ComboBox<Doctors> doktor_combobox;
     @FXML private Label format_hatasi_label;
     @FXML private ComboBox<String> polikinlik_combobox;
     @FXML private Label poliklinik_zorunludur_label;
@@ -226,24 +227,19 @@ public class hastaAnasayfaController {
 
 
 
-
-
             ResultSet rs = pstmt.executeQuery();
 
-            ObservableList<Appointment> liste = FXCollections.observableArrayList();
+            ObservableList<Doctors> liste = FXCollections.observableArrayList();
             while (rs.next()) {
-                String id = rs.getString("appointment_id");
+                String id = rs.getString("doctor_id");
+                String user_id = rs.getString("user_id");
 
-                // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1","1", "1", "1"));
+
+                liste.add(id);
             }
 
 
-
-
-
-
-            doktor_combobox.setItems();
+            doktor_combobox.setItems(liste);
 
 
         } catch (Exception e) {
