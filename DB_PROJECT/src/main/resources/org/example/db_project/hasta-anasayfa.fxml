@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -43,7 +44,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="369.0">
                                  <children>
-                                    <ComboBox fx:id="polikinlik_combobox" layoutX="50.0" layoutY="100.0" onAction="#polikinlik_combobox_on_action" prefHeight="30.0" prefWidth="400.0" promptText="Poliklinik Seçin" />
+                                    <ComboBox fx:id="poliklinik_combobox" layoutX="50.0" layoutY="100.0" onAction="#poliklinik_combobox_on_action" prefHeight="30.0" prefWidth="400.0" promptText="Poliklinik Seçin" />
                                     <ComboBox fx:id="doktor_combobox" layoutX="50.0" layoutY="200.0" onAction="#doktor_combobox_on_action" prefHeight="30.0" prefWidth="400.0" promptText="-FARK ETMEZ-" />
                                     <Label layoutX="50.0" layoutY="65.0" prefHeight="30.0" prefWidth="400.0" text="* Poliklinik" />
                                     <Label layoutX="50.0" layoutY="165.0" prefHeight="30.0" prefWidth="400.0" text="Doktor:" />
@@ -53,13 +54,19 @@
                                        <font>
                                           <Font size="16.0" />
                                        </font>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </Button>
                                     <Button fx:id="sifirla_button" layoutX="478.0" layoutY="375.0" mnemonicParsing="false" onAction="#sifirla_button_action" prefHeight="35.0" prefWidth="423.0" style="-fx-background-color: red;" text="Sıfırla" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="16.0" />
                                        </font>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </Button>
-                                    <TableView fx:id="randevu_sorgu_table" layoutX="50.0" layoutY="450.0" onMouseClicked="#randevu_sorgu_table_clicked" opacity="0.51" prefHeight="425.0" prefWidth="850.0">
+                                    <TableView fx:id="randevu_sorgu_table" layoutX="50.0" layoutY="450.0" onMouseClicked="#randevu_sorgu_table_clicked" opacity="0.0" prefHeight="425.0" prefWidth="850.0">
                                       <columns>
                                         <TableColumn fx:id="randevu_sorgu_tarihColumn" prefWidth="210.0" text="Tarih" />
                                           <TableColumn fx:id="randevu_sorgu_saatColumn" prefWidth="215.0" text="Saat" />
@@ -105,7 +112,7 @@
                                       <TableView fx:id="randevu_tableView" prefHeight="300.0" prefWidth="1200.0">
                                           <columns>
                                               <TableColumn fx:id="randevu_tarihColumn" prefWidth="200.0" text="Tarih" />
-                                              <TableColumn fx:id="randevu_poliklinikColumn" prefWidth="200.0" text="Poliklinik" />
+                                              <TableColumn fx:id="randevu_poliklinikColumn" prefWidth="200.0" text="Poliklink" />
                                               <TableColumn fx:id="randevu_doktorColumn" prefWidth="200.0" text="Doktor" />
                                               <TableColumn fx:id="randevu_durumColumn" prefWidth="200.0" text="Durum" />
                                           <TableColumn fx:id="randevu_islemColumn" prefWidth="200.0" text="İşlem" />
@@ -237,7 +244,7 @@
                                                       <Insets left="10.0" top="5.0" />
                                                    </padding>
                                                    <font>
-                                                      <Font name="System Bold" size="13.0" />
+                                                      <Font name="System Bold" size="18.0" />
                                                    </font>
                                                 </Label>
                                                 <Label fx:id="panel_hasta_soyad_label" prefHeight="40.0" prefWidth="346.0" text="Burada Soyad Gözükecek">
@@ -245,13 +252,16 @@
                                                       <Insets left="10.0" top="5.0" />
                                                    </padding>
                                                    <font>
-                                                      <Font name="System Bold" size="13.0" />
+                                                      <Font name="System Bold" size="18.0" />
                                                    </font>
                                                 </Label>
                                                 <Label fx:id="panel_hasta_tc_label" prefHeight="40.0" prefWidth="346.0" text="Burada TC Numarası Gözükecek">
                                                    <padding>
                                                       <Insets left="10.0" />
                                                    </padding>
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
                                                 </Label>
                                              </children>
                                           </VBox>
@@ -357,7 +367,7 @@
                                                 <Font size="16.0" />
                                              </font>
                                           </Button>
-                                          <Button fx:id="panel_cikis_button" mnemonicParsing="false" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: red;" text="ÇIKIŞ" textFill="WHITE">
+                                          <Button fx:id="panel_cikis_button" mnemonicParsing="false" onAction="#panel_cikis_button_onaction" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: red;" text="ÇIKIŞ" textFill="WHITE">
                                              <HBox.margin>
                                                 <Insets left="20.0" top="10.0" />
                                              </HBox.margin>

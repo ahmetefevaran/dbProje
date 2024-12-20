@@ -196,7 +196,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null));
             }
             randevuYonetTable.setItems(liste);
 
@@ -291,9 +291,9 @@ public class doktorAnaSayfaController {
 
         // Örnek veri ekleme
         ObservableList<Appointment> appointments = FXCollections.observableArrayList(
-                new Appointment("1", "Dr. Ahmet Yılmaz", "Ali Can", "15.12.2024", "10:30"),
-                new Appointment("2", "Dr. Fatma Kaya", "Ayşe Yıldız", "16.12.2024", "11:00"),
-                new Appointment("3", "Dr. Mehmet Demir", "Hasan Çelik", "17.12.2024", "14:00")
+                new Appointment("1", "Dr. Ahmet Yılmaz", "Ali Can", "15.12.2024", "10:30",null),
+                new Appointment("2", "Dr. Fatma Kaya", "Ayşe Yıldız", "16.12.2024", "11:00",null),
+                new Appointment("3", "Dr. Mehmet Demir", "Hasan Çelik", "17.12.2024", "14:00",null)
         );
 
         // Tabloya veri ekleme
