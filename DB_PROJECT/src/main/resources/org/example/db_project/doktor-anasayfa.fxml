@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <Pane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.doktorAnaSayfaController">
    <children>
@@ -36,17 +37,17 @@
                                    <AnchorPane>
                                        <TableView fx:id="randevularTable" layoutX="2.0" layoutY="161.0" prefHeight="683.0" prefWidth="1120.0">
                                            <columns>
-                                               <TableColumn fx:id="policlinicColumn" prefWidth="304.0" text="Poliklinik" />
+                                               <TableColumn fx:id="randevularIdColumn" prefWidth="304.0" text="Randevu ID" />
                                                <TableColumn fx:id="patientColumn" minWidth="0.0" prefWidth="237.0" text="Hasta Adı" />
                                                <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="267.0" text="Tarih" />
                                                <TableColumn fx:id="timeColumn" minWidth="0.0" prefWidth="162.0" text="Saat" />
                                        <TableColumn fx:id="randevularDurumColumn" minWidth="0.0" prefWidth="149.0" text="Tamamlanma Durumu" />
                                            </columns>
                                        </TableView>
-                                 <DatePicker fx:id="randevularBaslangicTarihInput1" layoutX="23.0" layoutY="97.0" promptText="Başlangıç Tarihi" />
-                                 <TextField fx:id="randevularHastaAdInput1" layoutX="255.0" layoutY="97.0" promptText="Hasta Adı" />
+                                 <DatePicker fx:id="randevularBaslangicTarihInput" layoutX="23.0" layoutY="97.0" promptText="Başlangıç Tarihi" />
+                                 <TextField fx:id="randevularHastaAdInput" layoutX="255.0" layoutY="97.0" promptText="Hasta Adı" />
                                  <Button fx:id="randevularAraButton1" layoutX="625.0" layoutY="97.0" mnemonicParsing="false" onAction="#randevularAraButtonAction" prefHeight="25.0" prefWidth="121.0" text="Ara" />
-                                 <TextField fx:id="randevularDurumInput" layoutX="443.0" layoutY="97.0" promptText="Tamamlanma Durumu" />
+                                 <ComboBox fx:id="randevularTamamlanmaDurumuInput" layoutX="432.0" layoutY="97.0" prefWidth="150.0" promptText="Tamamlanma Durumu" />
                                    </AnchorPane>
                                </content>
                            </Tab>
@@ -70,6 +71,51 @@
                                </content>
                            </Tab>
 
+                           <!-- Reçetelerim Tab -->
+                           <Tab text="Reçetelerim">
+                               <content>
+                                   <AnchorPane>
+                                       <TableView fx:id="recetelerimTable" layoutX="1.0" layoutY="103.0" prefHeight="739.0" prefWidth="1120.0">
+                                           <columns>
+                                               <TableColumn fx:id="ilacColumn" prefWidth="125.0" text="İlaç Adı" />
+                                               <TableColumn fx:id="DozColumn" prefWidth="205.0" text="Doz" />
+                                               <TableColumn fx:id="startDateColumn" prefWidth="339.0" text="Başlangıç Tarihi" />
+                                               <TableColumn fx:id="recetelerimPatientColumn" prefWidth="450.0" text="Hasta" />
+                                           </columns>
+                                       </TableView>
+                                 <DatePicker fx:id="recetelerimbaslangicTarihInput" layoutX="14.0" layoutY="54.0" promptText="Başlangıç Tarihi" />
+                                 <TextField fx:id="recetelerimHastaAdInput" layoutX="238.0" layoutY="54.0" promptText="Hasta Adı" />
+                                 <Button fx:id="recetelerimAraButton" layoutX="424.0" layoutY="54.0" mnemonicParsing="false" onAction="#recetelerimAraButtonAction" prefHeight="25.0" prefWidth="141.0" text="Ara" />
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
+                           <!-- Reçete Yaz Tab -->
+                           <Tab text="Reçete Yaz">
+                               <content>
+                                   <AnchorPane>
+
+                                       <!-- İlaç Adı (ComboBox) -->
+                                       <Label layoutX="11.0" layoutY="73.0" text="İlaç Adı:" />
+                                       <ComboBox fx:id="ilacAdiComboBox" layoutX="91.0" layoutY="69.0" prefWidth="200.0" promptText="İlaç Adı" />
+
+                                       <!-- Doz -->
+                                       <Label layoutX="10.0" layoutY="111.0" text="Doz:" />
+                                       <TextField fx:id="dozField" layoutX="91.0" layoutY="107.0" prefWidth="200.0" promptText="Doz" />
+
+                                       <!-- Kaydet Butonu -->
+                                       <Button fx:id="kaydetBtn" layoutX="8.0" layoutY="155.0" onAction="#kaydetButtonAction" text="Kaydet" />
+                                 <TextField fx:id="hastaAdiInput" layoutX="91.0" layoutY="26.0" prefHeight="25.0" prefWidth="201.0" promptText="Hasta Id" />
+                                 <Label layoutX="10.0" layoutY="30.0" text="Hasta Id" />
+                                 <Label fx:id="receteLabel" layoutX="91.0" layoutY="159.0" prefHeight="45.0" prefWidth="226.0" text="Bu ID de hasta mevcut değil" textFill="RED" visible="false">
+                                    <font>
+                                       <Font size="18.0" />
+                                    </font>
+                                 </Label>
+                                   </AnchorPane>
+                               </content>
+                           </Tab>
+
                            <!-- Tahlil Sonuçları Tab -->
                            <Tab text="Tahlil Sonuçları">
                                <content>
@@ -87,50 +133,6 @@
                                  <TextField fx:id="tahlilHastaAdInput" layoutX="222.0" layoutY="62.0" promptText="Hasta Adı" />
                                  <Button fx:id="tahlilAraButton" layoutX="605.0" layoutY="62.0" mnemonicParsing="false" onAction="#tahlilAraButtonAction" prefHeight="25.0" prefWidth="135.0" text="Ara" />
                                  <TextField fx:id="tahlilPoliklinikInput" layoutX="412.0" layoutY="62.0" promptText="Poliklinik" />
-                                   </AnchorPane>
-                               </content>
-                           </Tab>
-
-                           <!-- Reçetelerim Tab -->
-                           <Tab text="Reçetelerim">
-                               <content>
-                                   <AnchorPane>
-                                       <TableView fx:id="recetelerimTable" layoutX="1.0" layoutY="103.0" prefHeight="739.0" prefWidth="1120.0">
-                                           <columns>
-                                               <TableColumn fx:id="ilacColumn" prefWidth="125.0" text="İlaç Adı" />
-                                               <TableColumn fx:id="DozColumn" prefWidth="140.0" text="Doz" />
-                                               <TableColumn fx:id="startDateColumn" prefWidth="247.0" text="Başlangıç Tarihi" />
-                                               <TableColumn fx:id="patientColumn" prefWidth="442.0" text="Hasta" />
-                                               <TableColumn fx:id="buttonColumn" prefWidth="165.0" text="İşlem" />
-                                           </columns>
-                                       </TableView>
-                                 <DatePicker fx:id="recetelerimbaslangicTarihInput" layoutX="14.0" layoutY="54.0" promptText="Başlangıç Tarihi" />
-                                 <TextField fx:id="recetelerimHastaAdInput" layoutX="238.0" layoutY="54.0" promptText="Hasta Adı" />
-                                 <Button fx:id="recetelerimAraButton" layoutX="424.0" layoutY="54.0" mnemonicParsing="false" onAction="#recetelerimAraButtonAction" prefHeight="25.0" prefWidth="141.0" text="Ara" />
-                                   </AnchorPane>
-                               </content>
-                           </Tab>
-
-                           <!-- Reçete Yaz Tab -->
-                           <Tab text="Reçete Yaz">
-                               <content>
-                                   <AnchorPane>
-                                       <!-- Hasta Adı -->
-                                       <Label layoutX="10.0" layoutY="10.0" text="Hasta Adı:" />
-                                       <TextField fx:id="hastaAdiField" layoutX="100.0" layoutY="10.0" prefWidth="200.0" />
-
-                                       <!-- İlaç Adı (ComboBox) -->
-                                       <Label layoutX="10.0" layoutY="50.0" text="İlaç Adı:" />
-                                       <ComboBox fx:id="ilacAdiComboBox" layoutX="100.0" layoutY="50.0" prefWidth="200.0" />
-
-                                       <!-- Doz -->
-                                       <Label layoutX="10.0" layoutY="90.0" text="Doz:" />
-                                       <TextField fx:id="dozField" layoutX="100.0" layoutY="90.0" prefWidth="200.0" />
-
-                                       <!-- Kaydet Butonu -->
-                                       <Button fx:id="kaydetBtn" layoutX="8.0" layoutY="297.0" onAction="#kaydetButtonAction" text="Kaydet" />
-                                 <TextField layoutX="100.0" layoutY="147.0" prefHeight="143.0" prefWidth="206.0" />
-                                 <Label layoutX="8.0" layoutY="161.0" text="Doktor Notu" />
                                    </AnchorPane>
                                </content>
                            </Tab>
