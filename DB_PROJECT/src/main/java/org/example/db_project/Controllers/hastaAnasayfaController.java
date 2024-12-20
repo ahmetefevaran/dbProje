@@ -80,7 +80,7 @@ public class hastaAnasayfaController {
     @FXML private SplitPane yan_panel;
 
 
-    @FXML private ComboBox<Doctors> doktor_combobox;
+    @FXML private ComboBox<String> doktor_combobox;
     @FXML private Label format_hatasi_label;
     @FXML private ComboBox<String> polikinlik_combobox;
     @FXML private Label poliklinik_zorunludur_label;
@@ -218,29 +218,27 @@ public class hastaAnasayfaController {
         String selectedPoliklinik = polikinlik_combobox.getValue();
         System.out.println("Seçilen Poliklinik: " + selectedPoliklinik);
 
-
-        String sql = "SELECT * FROM doctors WHERE specialization ILIKE ? ";
-        try (Connection conn =connectToDatabase();
+        String sql = "SELECT doctor_id, user_id FROM doctors WHERE specialization ILIKE ?";
+        try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             pstmt.setString(1, selectedPoliklinik);
 
-
-
+            pstmt.setString(1, selectedPoliklinik);
 
             ResultSet rs = pstmt.executeQuery();
 
-            ObservableList<Doctors> liste = FXCollections.observableArrayList();
+            // Sadece doctor_id ve user_id bilgilerini tutacak liste
+            ObservableList<String> liste = FXCollections.observableArrayList();
+
             while (rs.next()) {
-                String id = rs.getString("doctor_id");
-                String user_id = rs.getString("user_id");
+                String doctorId = rs.getString("doctor_id");
+                String userId = rs.getString("user_id");
 
-
-                liste.add(id);
+                // doctor_id ve user_id'yi birleştirip listeye ekliyoruz
+                liste.add("Doctor ID: " + doctorId + " | User ID: " + userId);
             }
 
-
+            // Listeyi doktor_combobox'a ayarla
             doktor_combobox.setItems(liste);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -249,6 +247,9 @@ public class hastaAnasayfaController {
 
     @FXML
     void randevu_ara_button_onaction(ActionEvent event) {
+        String selectedPoliklinik = polikinlik_combobox.getValue();
+        String selectedDoctor = doktor_combobox.getValue();
+
 
     }
 
