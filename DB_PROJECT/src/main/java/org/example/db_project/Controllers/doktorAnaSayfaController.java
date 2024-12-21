@@ -146,6 +146,8 @@ public class doktorAnaSayfaController {
     @FXML
     private Label receteLabel;
 
+    final String sesion_user_id = "1";
+
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
         String user = "1";
@@ -206,7 +208,7 @@ public class doktorAnaSayfaController {
                 String status = rs.getString("status");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status, sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
 
@@ -248,7 +250,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
             }
             randevularTable.setItems(liste);
 
@@ -323,7 +325,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
             }
             randevularTable.setItems(liste);
 
@@ -348,7 +350,7 @@ public class doktorAnaSayfaController {
                 String status = rs.getString("status");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
 

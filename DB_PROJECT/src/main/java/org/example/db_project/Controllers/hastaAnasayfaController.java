@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,11 +14,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.example.db_project.Appointment;
 import org.example.db_project.Doctors;
+import org.example.db_project.Medications;
+
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.sql.*;
@@ -45,7 +52,7 @@ public class hastaAnasayfaController {
     @FXML private TableColumn<Appointment, ?> randevu_doktorColumn;
     @FXML private TableColumn<Appointment, ?> randevu_poliklinikColumn;
     @FXML private TableColumn<Appointment, ?> randevu_durumColumn;
-    @FXML private TableColumn<Appointment, ?> randevu_islemColumn;
+    @FXML private TableColumn<Appointment, Void> randevu_islemColumn;
     @FXML private TableColumn<Appointment, ?> randevu_tarihColumn;
     @FXML private TableView<Appointment> randevu_tableView;
 
@@ -62,7 +69,7 @@ public class hastaAnasayfaController {
     @FXML private TableColumn<?, ?> recetelerim_doktorColumn;
     @FXML private TableColumn<?, ?> recetelerim_dozColumn;
     @FXML private TableColumn<?, ?> recetelerim_ilacColumn;
-    @FXML private TableView<?> recetelerim_tableView;
+    @FXML private TableView<Medications> recetelerim_tableView;
 
 
     @FXML private Button panel_cikis_button;
@@ -91,26 +98,24 @@ public class hastaAnasayfaController {
     @FXML private DatePicker randevu_sorgu_baslangic_date;
     @FXML private Button sifirla_button;
 
-
-    @FXML private Button ara_button;
+    @FXML private TextField randevular_doktor_adi;
+    @FXML private Button randevu_yonet_ara_button;
     @FXML private DatePicker randevu_basla_tarih;
     @FXML private DatePicker randevu_bitis_tarih;
-    @FXML private TextArea randevu_detaylar_area;
 
 
     @FXML private Button ara_button1;
     @FXML private DatePicker tahlil_basla_tarih;
     @FXML private DatePicker tahlil_bitis_tarih;
-    @FXML private TextArea tahlil_detay_area;
 
 
     @FXML private Button ara_button2;
-    @FXML private TextArea recete_detay_area;
     @FXML private TextField recetelerim_arama_kismi;
     @FXML private DatePicker recetelerim_basla_tarih;
     @FXML private DatePicker recetelerim_bitis_tarih;
 
     final String sesion_user_id = "221";
+    final String sesion_patient_id = "1";
 
     @FXML
     void initialize() {
@@ -121,7 +126,7 @@ public class hastaAnasayfaController {
 
         try (Connection conn = connectToDatabase()) {
             // SQL sorgusu: `patientprofile` görünümünden kullanıcı bilgilerini al
-            String sql = "SELECT * FROM patientprofile WHERE user_id = ?";
+                String sql = "SELECT * FROM patientprofile WHERE user_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
                 int userId = Integer.parseInt(sesion_user_id);
@@ -156,6 +161,8 @@ public class hastaAnasayfaController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        setYaklasanRandevular();
 
         assert yan_panel != null : "fx:id=\"yan_panel\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_adres != null : "fx:id=\"panel_adres\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -219,24 +226,66 @@ public class hastaAnasayfaController {
 
 
         // ----- Randevu Yönet -----
-        assert ara_button != null : "fx:id=\"ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+
+        randevu_islemColumn.setCellFactory(new Callback<>() {
+            //Sil butonuna tıklanınca burası çalışıyor
+            @Override
+            public TableCell<Appointment, Void> call(final TableColumn<Appointment, Void> param) {
+                return new TableCell<>() {
+                    private final Button button = new Button("Randevuyu İptal Et");
+
+                    {
+                        button.setOnAction(event -> {
+                            Appointment data = getTableView().getItems().get(getIndex());
+
+                            String updateSql = "UPDATE appointments " +
+                                    "SET status ='cancelled' " +
+                                    "WHERE appointment_id = ?";
+
+                            try (Connection conn =connectToDatabase();
+                                 PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+
+                                pstmt.setInt(1,Integer.valueOf(data.getId()));
+
+                                pstmt.executeQuery();
+
+                            } catch (Exception e) {
+                            }
+
+                            updateRandevulariYonet();
+                            setYaklasanRandevular();
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(button);
+                        }
+                    }
+                };
+            }
+        });
+        updateRandevulariYonet();
+
+        assert randevu_yonet_ara_button != null : "fx:id=\"ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_basla_tarih != null : "fx:id=\"randevu_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_bitis_tarih != null : "fx:id=\"randevu_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert randevu_detaylar_area != null : "fx:id=\"randevu_detaylar_area\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_doktorColumn != null : "fx:id=\"randevu_doktorColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_islemColumn != null : "fx:id=\"randevu_iptalButton\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_poliklinikColumn != null : "fx:id=\"randevu_poliklinikColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_durumColumn != null : "fx:id=\"randevu_saatColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_tableView != null : "fx:id=\"randevu_tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_tarihColumn != null : "fx:id=\"randevu_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert recete_detay_area != null : "fx:id=\"recete_detay_area\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
 
         // ----- Tahlil -----
         assert ara_button1 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_basla_tarih != null : "fx:id=\"tahlil_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_bitis_tarih != null : "fx:id=\"tahlil_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tahlil_detay_area != null : "fx:id=\"tahlil_detay_area\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_doktorColumn != null : "fx:id=\"tahlil_doktorColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_notColumn != null : "fx:id=\"tahlil_notColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_poliklinkColumn != null : "fx:id=\"tahlil_poliklinkColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -246,6 +295,8 @@ public class hastaAnasayfaController {
 
 
         // ----- Reçeteler -----
+
+        // updateReceteler();
         assert ara_button2 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_arama_kismi != null : "fx:id=\"recetelerim_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_basla_tarih != null : "fx:id=\"recetelerim_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -257,6 +308,7 @@ public class hastaAnasayfaController {
         assert recetelerim_tarihColumn != null : "fx:id=\"recetelerim_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
     }
+
 
     @FXML
     void panel_cikis_button_onaction(ActionEvent event) {
@@ -271,21 +323,6 @@ public class hastaAnasayfaController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    void baslangic_date_onaction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void bitis_date_onaction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void doktor_combobox_on_action(ActionEvent event) {
-
     }
 
     @FXML
@@ -328,6 +365,7 @@ public class hastaAnasayfaController {
             e.printStackTrace();
         }
     }
+
     @FXML
     void randevu_ara_button_onaction(ActionEvent event) {
         Doctors selectedDoctor = doktor_combobox.getValue();
@@ -406,14 +444,12 @@ public class hastaAnasayfaController {
                 String doctorName = rs.getString("doctor_name");
                 String availableTime = rs.getTimestamp("available_time").toLocalDateTime().toLocalTime().toString();
                 String availableDate = rs.getTimestamp("available_time").toLocalDateTime().toLocalDate().toString();
-                randevuListesi.add(new Appointment(idSayacStr, doctorName, doctorName, availableDate, availableTime, selectedPoliklinik));
+                randevuListesi.add(new Appointment(idSayacStr, doctorName, doctorName, availableDate, availableTime, selectedPoliklinik, selectedDoctorId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
 
     @FXML
     void randevu_sorgu_table_clicked(MouseEvent event) {
@@ -426,7 +462,7 @@ public class hastaAnasayfaController {
             alert.setTitle("Randevu Ayrıntıları");
             alert.setHeaderText("Randevunun Detayları:");
             alert.setContentText(
-                            "Doktor: " + selectedAppointment.getDoctorName() + "\n" +
+                    "Doktor: " + selectedAppointment.getDoctorName() + "\n" +
                             "Tarih: " + selectedAppointment.getAppointmentDate() + "\n" +
                             "Saat: " + selectedAppointment.getAppointmentTime() + "\n" +
                             "Poliklinik: " + selectedAppointment.getSpecialization()  + "\n\n" +
@@ -444,6 +480,49 @@ public class hastaAnasayfaController {
             if (result.isPresent() && result.get() == yesButton) {
                 System.out.println("Evet seçildi. İşlem onaylandı.");
 
+
+                if (sesion_patient_id != null) {
+                    // Appointment eklemek için SQL
+                    String sqlInsertAppointment = "INSERT INTO public.appointments (" +
+                            "doctor_id, patient_id, appointment_date, appointment_time, status, created_at) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)";
+
+                    try (Connection con = connectToDatabase();
+                         PreparedStatement pstmt = con.prepareStatement(sqlInsertAppointment)) {
+
+
+                        String appointmentDateStr = selectedAppointment.getAppointmentDate();
+                        String appointmentTimeStr = selectedAppointment.getAppointmentTime() + ":00";
+
+                        Date appointmentDate = Date.valueOf(appointmentDateStr);
+                        Time appointmentTime = Time.valueOf(appointmentTimeStr);
+
+                        pstmt.setInt(1, Integer.parseInt(selectedAppointment.getDoctor_id())); // doctor_id
+                        pstmt.setInt(2, Integer.parseInt(sesion_patient_id)); // patient_id
+                        pstmt.setDate(3, appointmentDate);  // appointment_date
+                        pstmt.setTime(4, appointmentTime);  // appointment_time
+                        pstmt.setString(5, "planned"); // status (default planned)
+                        pstmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now())); // created_at
+
+                        pstmt.executeUpdate();
+
+                        Alert info_alert = new Alert(Alert.AlertType.INFORMATION);
+                        info_alert.setTitle("Başarı");
+                        info_alert.setHeaderText(null);
+                        info_alert.setContentText("Randevu başarıyla oluşturuldu.");
+                        yesButton = new ButtonType("Devam Et", ButtonBar.ButtonData.OK_DONE);
+                        info_alert.getButtonTypes().setAll(yesButton);
+                        info_alert.showAndWait();
+
+
+                        sifirla();
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Hasta bilgisi bulunamadı.");
+                }
             } else {
                 System.out.println("İptal edildi.");
             }
@@ -452,10 +531,195 @@ public class hastaAnasayfaController {
         }
     }
 
-
-
     @FXML
     void sifirla_button_action(ActionEvent event) {
-
+        sifirla();
     }
+
+    void sifirla() {
+
+        randevu_sorgu_baslangic_date.setValue(null);
+        randevu_sorgu_baslangic_date.setPromptText("-FARK ETMEZ-");
+
+        randevu_sorgu_bitis_date.setValue(null);
+        randevu_sorgu_bitis_date.setPromptText("-FARK ETMEZ-");
+
+        doktor_combobox.setValue(null);
+
+        poliklinik_combobox.setValue("Kardiyoloji");
+
+        ObservableList<?> currentData = randevu_sorgu_table.getItems();
+        currentData.clear();
+        randevu_sorgu_table.setOpacity(0);
+    }
+
+    @FXML
+    void randevu_yonet_ara_button_onaction(ActionEvent event) {
+        updateRandevulariYonet();
+    }
+
+    void updateRandevulariYonet() {
+        String doktorAdi = randevular_doktor_adi.getText();
+        LocalDate baslangic_date = randevu_basla_tarih.getValue();
+        LocalDate bitis_date = randevu_bitis_tarih.getValue();
+
+        String sql = "SELECT * FROM patientAppointments WHERE patient_id = ? AND status = 'planned'";
+
+        if (doktorAdi != null && !doktorAdi.isEmpty()) {
+            sql += "AND doctor_name LIKE ? ";
+        }
+        if (baslangic_date != null && bitis_date != null) {
+            sql += "AND appointment_date BETWEEN ? AND ? ";
+        } else if (baslangic_date != null) {
+            sql += "AND appointment_date >= ? ";
+        } else if (bitis_date != null) {
+            sql += "AND appointment_date <= ? ";
+        }
+        sql += "ORDER BY appointment_date DESC";
+
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+
+            int index = 2; // Start from the 3rd parameter
+            if (doktorAdi != null && !doktorAdi.isEmpty()) {
+                pstmt.setString(index++, "%" + doktorAdi + "%"); // Doctor name (LIKE)
+            }
+            if (baslangic_date != null && bitis_date != null) {
+                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
+                pstmt.setDate(index++, Date.valueOf(bitis_date)); // End date
+            } else if (baslangic_date != null) {
+                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
+            } else if (bitis_date != null) {
+                pstmt.setDate(index++, Date.valueOf(bitis_date)); // End date
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+            ObservableList<Appointment> liste = FXCollections.observableArrayList();
+
+            while (rs.next()) {
+                String doctor_name = rs.getString("doctor_name");
+                String appointmentDate = rs.getString("appointment_date");
+                String appointmentTime = rs.getString("appointment_time");
+                String appointmentId = rs.getString("appointment_id");
+                String specialization = rs.getString("specialization");
+                String status = rs.getString("status");
+
+                String format_date =  appointmentDate + "    " + appointmentTime.substring(0, 5);
+
+                liste.add(new Appointment(appointmentId, doctor_name, status, appointmentDate, format_date, specialization, sesion_user_id));
+            }
+
+            randevu_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTime"));
+            randevu_poliklinikColumn.setCellValueFactory(new PropertyValueFactory<>("specialization"));
+            randevu_doktorColumn.setCellValueFactory(new PropertyValueFactory<>("doctorName"));
+            randevu_durumColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
+
+            randevu_tableView.setItems(liste);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    void updateReceteler()
+    {
+        // ???
+
+        String sql = "SELECT pr.dosage, pr.prescribed_date, pr.doctor_id, u.name " +
+                "FROM prescriptions pr " +
+                "JOIN patients p ON pr.patient_id = pr.doctor_id " +
+                "JOIN users u ON p.user_id = u.user_id " +
+                "WHERE p.patient_id  = ?";
+
+        try (Connection conn =connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            ObservableList<Medications> liste = FXCollections.observableArrayList();
+            while (rs.next()) {
+                String ilacAdi = rs.getString("medication_name");
+                String patient_id = rs.getString("patient_id");
+                String doctor_id = rs.getString("doctor_id");
+                String prescribed_at = rs.getString("prescribed_date");
+                String dosage = rs.getString("dosage");
+                String name = rs.getString("name");
+
+                // Appointment nesnesi oluştur ve listeye ekle
+                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name));
+            }
+            recetelerim_tableView.setItems(liste);
+
+        } catch (Exception e) {
+        }
+    }
+
+
+
+    void setYaklasanRandevular() {
+        String sql = "SELECT * FROM patientAppointments " +
+                "WHERE patient_id = ? " +
+                "AND status = 'planned' " +
+                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String doctor_name = rs.getString("doctor_name");
+                String appointmentDate = rs.getString("appointment_date");
+                String appointmentTime = rs.getString("appointment_time");
+                String specialization = rs.getString("specialization");
+
+                // Tarih, doktor ve klinik bilgilerini 3 ayrı label olarak ayırıyoruz
+                String time = appointmentTime.substring(0, 5);
+                String dateText = appointmentDate + " " + time;
+                String doctorText = doctor_name;
+                String specializationText = specialization;
+
+                // HBox içinde her label'ı yan yana hizalayacağız
+                HBox hbox = new HBox();
+                hbox.setSpacing(10); // Aralarına boşluk ekler
+                hbox.setAlignment(Pos.CENTER_LEFT); // Sağ üst hizalama
+
+                // HBox'a border ekliyoruz
+                hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
+
+                // Date Label
+                Label dateLabel = new Label(dateText);
+                dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // Doctor Label
+                Label doctorLabel = new Label(doctorText);
+                doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // Specialization Label
+                Label specializationLabel = new Label(specializationText);
+                specializationLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // HBox'a Label'ları ekle
+                hbox.getChildren().addAll(dateLabel, doctorLabel, specializationLabel);
+
+                // VBox'a HBox'ı ekle
+                panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
 }
