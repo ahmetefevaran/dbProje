@@ -444,7 +444,7 @@ public class hastaAnasayfaController {
                 String doctorName = rs.getString("doctor_name");
                 String availableTime = rs.getTimestamp("available_time").toLocalDateTime().toLocalTime().toString();
                 String availableDate = rs.getTimestamp("available_time").toLocalDateTime().toLocalDate().toString();
-                randevuListesi.add(new Appointment(idSayacStr, doctorName, doctorName, availableDate, availableTime, selectedPoliklinik, selectedDoctorId));
+                randevuListesi.add(new Appointment(idSayacStr, doctorName, doctorName, availableDate, availableTime, selectedPoliklinik,null, selectedDoctorId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -609,7 +609,7 @@ public class hastaAnasayfaController {
 
                 String format_date =  appointmentDate + "    " + appointmentTime.substring(0, 5);
 
-                liste.add(new Appointment(appointmentId, doctor_name, status, appointmentDate, format_date, specialization, sesion_user_id));
+                liste.add(new Appointment(appointmentId, doctor_name, status, appointmentDate, format_date, specialization,null, sesion_user_id));
             }
 
             randevu_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTime"));

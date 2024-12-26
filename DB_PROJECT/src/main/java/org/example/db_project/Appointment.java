@@ -8,8 +8,9 @@ public class Appointment {
     private String appointmentTime;
     private String specialization;
     private String doctor_id;
+    private String status;
 
-    public Appointment(String id, String doctorName, String patientName, String appointmentDate, String appointmentTime, String specialization, String doctor_id) {
+    public Appointment(String id, String doctorName, String patientName, String appointmentDate, String appointmentTime, String specialization,String status, String doctor_id) {
         this.id = id;
         this.doctorName = doctorName;
         this.patientName = patientName;
@@ -17,11 +18,13 @@ public class Appointment {
         this.appointmentTime = appointmentTime;
         this.specialization = specialization;
         this.doctor_id = doctor_id;
+        this.status = status;
     }
 
     public String getId() {
         return id;
     }
+    public String getStatus() {return status;}
 
     public String getDoctor_id() {
         return doctor_id;

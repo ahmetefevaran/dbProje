@@ -3,12 +3,26 @@ package org.example.db_project.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.example.db_project.Appointment;
+
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -148,40 +162,245 @@ public class doktorAnaSayfaController {
 
     final String sesion_user_id = "1";
 
+    @FXML
+    private Button newPrescription;
+
+    @FXML
+    private Label panel_adres;
+
+    @FXML
+    private Button panel_cikis_button;
+
+    @FXML
+    private Label panel_cinsiyet;
+
+    @FXML
+    private Label panel_dogum_tarihi;
+
+    @FXML
+    private Label panel_doktor_ad_label;
+
+    @FXML
+    private Label panel_doktor_soyad_label;
+
+    @FXML
+    private Label panel_doktor_tc_label;
+
+    @FXML
+    private Button panel_duzenle_button;
+
+    @FXML
+    private Label panel_email;
+
+    @FXML
+    private ImageView panel_hasta_image;
+
+    @FXML
+    private Label panel_kan_grubu;
+
+    @FXML
+    private Label panel_tel_no;
+
+    @FXML
+    private VBox panel_yaklasan_randevular_vbox;
+
+    final String sesion_doctor_id = "1";
+
+    //Functions
+    private String getPatientIdByTC(String tcNumber) {
+        String sql = "SELECT p.patient_id FROM patients p " +
+                "JOIN users u ON u.user_id = p.user_id " +
+                "WHERE u.tc_number = ?";
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, tcNumber);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("patient_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if no patient found
+    }
+
+    private boolean insertPrescription(String patientId, String medicationName, String dosage) {
+        String sql = "INSERT INTO prescriptions (patient_id, doctor_id, medication_name, dosage, prescribed_date) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, Integer.parseInt(patientId));
+            pstmt.setInt(2, 1); // Replace with the correct doctor ID
+            pstmt.setString(3, medicationName);
+            pstmt.setInt(4, Integer.parseInt(dosage));
+            pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    void setYaklasanRandevular() {
+        String sql = "SELECT * FROM patientAppointments " +
+                "WHERE patient_id = ? " +
+                "AND status = 'planned' " +
+                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_doctor_id)); // Patient ID
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String doctor_name = rs.getString("doctor_name");
+                String appointmentDate = rs.getString("appointment_date");
+                String appointmentTime = rs.getString("appointment_time");
+                String specialization = rs.getString("specialization");
+
+                // Tarih, doktor ve klinik bilgilerini 3 ayrı label olarak ayırıyoruz
+                String time = appointmentTime.substring(0, 5);
+                String dateText = appointmentDate + " " + time;
+                String doctorText = doctor_name;
+                String specializationText = specialization;
+
+                // HBox içinde her label'ı yan yana hizalayacağız
+                HBox hbox = new HBox();
+                hbox.setSpacing(10); // Aralarına boşluk ekler
+                hbox.setAlignment(Pos.CENTER_LEFT); // Sağ üst hizalama
+
+                // HBox'a border ekliyoruz
+                hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
+
+                // Date Label
+                Label dateLabel = new Label(dateText);
+                dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // Doctor Label
+                Label doctorLabel = new Label(doctorText);
+                doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // Specialization Label
+                Label specializationLabel = new Label(specializationText);
+                specializationLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+
+                // HBox'a Label'ları ekle
+                hbox.getChildren().addAll(dateLabel, doctorLabel, specializationLabel);
+
+                // VBox'a HBox'ı ekle
+                panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void panel_cikis_button_onaction(ActionEvent event) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/hello-view.fxml"));
+            Pane pane = loader.load();
+            Scene scene = new Scene(pane);
+            Stage stage = (Stage) panel_cikis_button.getScene().getWindow();
+            stage.setScene(scene);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showPopup() {
+        // Create a new stage for the popup
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with the main window
+        popupStage.setTitle("Yeni Reçete Ekle");
+
+        // Layout for the popup
+        GridPane popupLayout = new GridPane();
+        popupLayout.setPadding(new Insets(10));
+        popupLayout.setHgap(10);
+        popupLayout.setVgap(10);
+
+        // Components for the popup
+        Label hastaTCLabel = new Label("Hasta TC:");
+        TextField hastaTCField = new TextField();
+        hastaTCField.setPromptText("Hasta TC");
+
+        Label ilacAdiLabel = new Label("İlaç Adı:");
+        ComboBox<String> ilacAdiComboBox = new ComboBox<>();
+        ilacAdiComboBox.getItems().addAll("Paracetamol", "Ibuprofen", "Amoxicillin", "Ciprofloxacin", "Metformin");
+        ilacAdiComboBox.setPromptText("İlaç Adı");
+
+        Label dozLabel = new Label("Doz:");
+        TextField dozField = new TextField();
+        dozField.setPromptText("Doz");
+
+        Button kaydetButton = new Button("Kaydet");
+        kaydetButton.setOnAction(event -> {
+            // Retrieve input values
+            String hastaTC = hastaTCField.getText();
+            System.out.println(hastaTC);
+            String ilacAdi = ilacAdiComboBox.getValue();
+            String doz = dozField.getText();
+
+            if (hastaTC.isEmpty() || ilacAdi == null || doz.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Lütfen tüm alanları doldurun!");
+                alert.show();
+                return;
+            }
+
+            // Fetch the patient_id using hastaTC
+            String patientId = getPatientIdByTC(hastaTC);
+            if (patientId == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Hasta bulunamadı!");
+                alert.show();
+                return;
+            }
+
+            // Insert the prescription
+            if (insertPrescription(patientId, ilacAdi, doz)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Reçete başarıyla kaydedildi!");
+                alert.show();
+                popupStage.close();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Reçete kaydedilirken bir hata oluştu!");
+                alert.show();
+            }
+        });
+
+        // Add components to the popup layout
+        popupLayout.add(hastaTCLabel, 0, 0);
+        popupLayout.add(hastaTCField, 1, 0);
+        popupLayout.add(ilacAdiLabel, 0, 1);
+        popupLayout.add(ilacAdiComboBox, 1, 1);
+        popupLayout.add(dozLabel, 0, 2);
+        popupLayout.add(dozField, 1, 2);
+        popupLayout.add(kaydetButton, 1, 3);
+
+        // Set the scene and show the popup
+        Scene popupScene = new Scene(popupLayout, 300, 200);
+        popupStage.setScene(popupScene);
+        popupStage.showAndWait();
+    }
+
+
+
+
+
+
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
         String user = "1";
         String password = "1";
         Connection conn = DriverManager.getConnection(url, user, password);
         return conn;
-    }
-    @FXML
-    void kaydetButtonAction(ActionEvent event) {
-        receteLabel.setVisible(false);
-
-        String sql = "INSERT INTO prescriptions (patient_id,doctor_id,medication_name,dosage,prescribed_date) VALUES(?,?,?,?,?)";
-        String patientId = hastaAdiInput.getText();
-        String ilacAdi = (String) ilacAdiComboBox.getValue();
-        String doz =dozField.getText();
-        try (Connection conn =connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1,Integer.parseInt(patientId));
-            pstmt.setInt(2,1);
-            pstmt.setString(3,ilacAdi);
-            pstmt.setInt(4, Integer.parseInt(doz));
-            Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
-            pstmt.setTimestamp(5, currentTimestamp);
-            try {
-                int insertedRows = pstmt.executeUpdate();
-            }catch (SQLException e){
-                receteLabel.setVisible(true);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @FXML
@@ -208,7 +427,7 @@ public class doktorAnaSayfaController {
                 String status = rs.getString("status");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status, sesion_user_id));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status, sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
 
@@ -250,7 +469,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
             }
             randevularTable.setItems(liste);
 
@@ -325,7 +544,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
             }
             randevularTable.setItems(liste);
 
@@ -350,7 +569,7 @@ public class doktorAnaSayfaController {
                 String status = rs.getString("status");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,status,sesion_user_id));
+                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
 
@@ -393,6 +612,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void initialize() {
+        assert newPrescription != null : "fx:id=\"newPrescription\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert receteLabel != null : "fx:id=\"receteLabel\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert hastaAdiInput != null : "fx:id=\"hastaAdiInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert randevularTamamlanmaDurumuInput != null : "fx:id=\"randevularTamamlanmaDurumuInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
@@ -434,27 +654,49 @@ public class doktorAnaSayfaController {
         );
         randevularTamamlanmaDurumuInput.setItems(options);
 
-        hastaAdiInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Sadece rakamlara izin ver
-                hastaAdiInput.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
+        try (Connection conn = connectToDatabase()) {
+            // SQL sorgusu: `patientprofile` görünümünden kullanıcı bilgilerini al
+            String sql = "SELECT * FROM patientprofile WHERE user_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        // Doz girişi için sadece sayıya izin ver
-        dozField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Sadece rakamlara izin ver
-                dozField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
+                int userId = Integer.parseInt(sesion_user_id);
+                pstmt.setInt(1, userId);
 
-        ObservableList<String> ilaclar = FXCollections.observableArrayList(
-                "Paracetamol",
-                "Ibuprofen",
-                "Amoxicillin",
-                "Ciprofloxacin",
-                "Metformin"
-        );
-        ilacAdiComboBox.setItems(ilaclar);
+                ResultSet rs = pstmt.executeQuery();
+
+                // Eğer sonuç varsa bilgileri atama yap
+                if (rs.next()) {
+                    String fullName = rs.getString("name");
+                    String[] nameParts = fullName.split(" ");
+
+                    String firstName = nameParts[0];
+                    panel_doktor_ad_label.setText(firstName);
+
+                    String lastName = nameParts[nameParts.length - 1];
+                    panel_doktor_soyad_label.setText(lastName);
+
+                    panel_email.setText(rs.getString("email"));
+                    panel_tel_no.setText(rs.getString("phone"));
+                    panel_cinsiyet.setText(rs.getString("gender"));
+                    panel_kan_grubu.setText(rs.getString("bloodtype"));
+                    panel_adres.setText(rs.getString("address"));
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    panel_dogum_tarihi.setText(sdf.format(rs.getDate("date_of_birth")));
+
+                } else {
+                    System.out.println("Hasta bilgisi bulunamadı.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        setYaklasanRandevular();
+
+
+
+
 
         // randevu yönet icin veri bağlama
         idRow.setCellValueFactory(new PropertyValueFactory<>("id"));
