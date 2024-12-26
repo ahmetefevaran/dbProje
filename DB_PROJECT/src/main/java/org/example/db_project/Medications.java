@@ -8,27 +8,22 @@ public class Medications {
     private String dosage_instructions;
     private String prescribed_at;
     private String patient_name;
+    private String doctor_name;
 
-
-    public Medications(String prescription_id, String doctor_id, String patient_id, String medication_name, String dosage_instructions, String prescribed_at, String patient_name) {
+    // Constructor
+    public Medications(String prescription_id, String doctor_id, String patient_id, String medication_name,
+                       String dosage_instructions, String prescribed_at, String patient_name, String doctor_name) {
         this.prescription_id = prescription_id;
         this.doctor_id = doctor_id;
         this.patient_id = patient_id;
         this.medication_name = medication_name;
         this.dosage_instructions = dosage_instructions;
         this.prescribed_at = prescribed_at;
-        this.patient_name =patient_name;
+        this.patient_name = patient_name;
+        this.doctor_name = doctor_name;
     }
 
     public String getPrescription_id() {
-        return prescription_id;
-    }
-
-    public String getPatient_name() {
-        return patient_name;
-    }
-
-    public String getprescription_id() {
         return prescription_id;
     }
 
@@ -50,5 +45,13 @@ public class Medications {
 
     public String getPrescribed_at() {
         return prescribed_at;
+    }
+
+    public String getPatient_name() {
+        return patient_name;
+    }
+
+    public String getDoctor_name() {
+        return doctor_name;
     }
 }

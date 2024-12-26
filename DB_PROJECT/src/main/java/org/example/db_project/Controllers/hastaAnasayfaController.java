@@ -296,7 +296,7 @@ public class hastaAnasayfaController {
 
         // ----- Reçeteler -----
 
-        // updateReceteler();
+        updateReceteler();
         assert ara_button2 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_arama_kismi != null : "fx:id=\"recetelerim_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_basla_tarih != null : "fx:id=\"recetelerim_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -627,36 +627,48 @@ public class hastaAnasayfaController {
 
     void updateReceteler()
     {
-        // ???
 
-        String sql = "SELECT pr.dosage, pr.prescribed_date, pr.doctor_id, u.name " +
+        System.out.printf("girdi");
+
+        String sql = "SELECT * " +
                 "FROM prescriptions pr " +
-                "JOIN patients p ON pr.patient_id = pr.doctor_id " +
-                "JOIN users u ON p.user_id = u.user_id " +
-                "WHERE p.patient_id  = ?";
+                "JOIN patients p ON p.patient_id = pr.patient_id " +
+                "JOIN doctors d ON pr.doctor_id = d.doctor_id " +
+                "JOIN users u ON u.user_id = d.user_id " +
+                "WHERE p.patient_id = ?";
 
-        try (Connection conn =connectToDatabase();
+        try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql))
         {
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
 
             ResultSet rs = pstmt.executeQuery();
 
             ObservableList<Medications> liste = FXCollections.observableArrayList();
             while (rs.next()) {
+
+
                 String ilacAdi = rs.getString("medication_name");
-                String patient_id = rs.getString("patient_id");
-                String doctor_id = rs.getString("doctor_id");
                 String prescribed_at = rs.getString("prescribed_date");
                 String dosage = rs.getString("dosage");
                 String name = rs.getString("name");
 
-                // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name));
+                liste.add(new Medications("1", null, null, ilacAdi, dosage, prescribed_at,null, name));
             }
+
+            recetelerim_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("prescribed_at"));
+            recetelerim_doktorColumn.setCellValueFactory(new PropertyValueFactory<>("doctor_name"));
+            recetelerim_ilacColumn.setCellValueFactory(new PropertyValueFactory<>("medication_name"));
+            recetelerim_dozColumn.setCellValueFactory(new PropertyValueFactory<>("dosage_instructions"));
+
+
             recetelerim_tableView.setItems(liste);
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        System.out.printf("Çıktı");
     }
 
 
@@ -670,51 +682,52 @@ public class hastaAnasayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
             ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                String doctor_name = rs.getString("doctor_name");
-                String appointmentDate = rs.getString("appointment_date");
-                String appointmentTime = rs.getString("appointment_time");
-                String specialization = rs.getString("specialization");
+            panel_yaklasan_randevular_vbox.getChildren().clear(); // İlk önce VBox'ı boşaltıyoruz
 
-                // Tarih, doktor ve klinik bilgilerini 3 ayrı label olarak ayırıyoruz
-                String time = appointmentTime.substring(0, 5);
-                String dateText = appointmentDate + " " + time;
-                String doctorText = doctor_name;
-                String specializationText = specialization;
+            if (!rs.next()) {
+                Label noAppointmentsLabel = new Label("Yaklaşan randevunuz bulunmamaktadır.");
+                noAppointmentsLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
+                panel_yaklasan_randevular_vbox.getChildren().add(noAppointmentsLabel);
+            } else {
+                do {
+                    String doctor_name = rs.getString("doctor_name");
+                    String appointmentDate = rs.getString("appointment_date");
+                    String appointmentTime = rs.getString("appointment_time");
+                    String specialization = rs.getString("specialization");
 
-                // HBox içinde her label'ı yan yana hizalayacağız
-                HBox hbox = new HBox();
-                hbox.setSpacing(10); // Aralarına boşluk ekler
-                hbox.setAlignment(Pos.CENTER_LEFT); // Sağ üst hizalama
+                    String time = appointmentTime.substring(0, 5);
+                    String dateText = appointmentDate + " " + time;
+                    String doctorText = doctor_name;
+                    String specializationText = specialization;
 
-                // HBox'a border ekliyoruz
-                hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
+                    HBox hbox = new HBox();
+                    hbox.setSpacing(10);
+                    hbox.setAlignment(Pos.CENTER_LEFT);
 
-                // Date Label
-                Label dateLabel = new Label(dateText);
-                dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
 
-                // Doctor Label
-                Label doctorLabel = new Label(doctorText);
-                doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    Label dateLabel = new Label(dateText);
+                    dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                // Specialization Label
-                Label specializationLabel = new Label(specializationText);
-                specializationLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    Label doctorLabel = new Label(doctorText);
+                    doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                // HBox'a Label'ları ekle
-                hbox.getChildren().addAll(dateLabel, doctorLabel, specializationLabel);
+                    Label specializationLabel = new Label(specializationText);
+                    specializationLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                // VBox'a HBox'ı ekle
-                panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+                    hbox.getChildren().addAll(dateLabel, doctorLabel, specializationLabel);
+                    panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+                } while (rs.next());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
 
 
