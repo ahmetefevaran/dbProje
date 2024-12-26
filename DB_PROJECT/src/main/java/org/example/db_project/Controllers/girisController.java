@@ -102,6 +102,18 @@ public class girisController {
 
                                 HelloApplication.userSession.setSesionUserId(userId);
                                 HelloApplication.userSession.setSesionDoctorId(doctor_id);
+
+                                try {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/doktor-anasayfa.fxml"));
+                                    Pane pane = loader.load();
+                                    Scene scene = new Scene(pane);
+                                    Stage stage = (Stage) giris_yap_button.getScene().getWindow();
+                                    stage.setScene(scene);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
                             } else {
                                 statusLabel.setText("Doktor bulunamadı.");
                             }

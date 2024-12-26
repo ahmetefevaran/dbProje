@@ -170,22 +170,6 @@
                                        <children>
                                           <VBox prefHeight="200.0" prefWidth="100.0">
                                              <children>
-                                                <Label prefHeight="38.0" prefWidth="120.0" text="Doğum Tarihi:">
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <Label prefHeight="38.0" prefWidth="120.0" text="Kan Grubu:">
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </Label>
                                                 <Label prefHeight="38.0" prefWidth="120.0" text="Cinsiyet:">
                                                    <VBox.margin>
                                                       <Insets />
@@ -202,14 +186,6 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label prefHeight="38.0" prefWidth="120.0" text="Adres:">
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </Label>
                                                 <Label prefHeight="38.0" prefWidth="120.0" text="Telefon No:">
                                                    <VBox.margin>
                                                       <Insets />
@@ -218,20 +194,15 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
+                                                <Label prefHeight="38.0" prefWidth="120.0" text="Poliklinik:">
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
                                              </children>
                                           </VBox>
                                           <VBox prefHeight="200.0" prefWidth="300.0">
                                              <children>
-                                                <Label fx:id="panel_dogum_tarihi" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <Label fx:id="panel_kan_grubu" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </Label>
                                                 <Label fx:id="panel_cinsiyet" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
                                                    <padding>
                                                       <Insets left="10.0" />
@@ -242,12 +213,12 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label fx:id="panel_adres" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                <Label fx:id="panel_tel_no" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
                                                    <padding>
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label fx:id="panel_tel_no" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
+                                                <Label fx:id="panel_poliklinik" prefHeight="38.0" prefWidth="300.0" text="Burada Ad Gözükecek">
                                                    <padding>
                                                       <Insets left="10.0" />
                                                    </padding>
