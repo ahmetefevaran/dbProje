@@ -1,6 +1,5 @@
 package org.example.db_project.Controllers;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,12 +15,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.example.db_project.Appointment;
 import org.example.db_project.Doctors;
+import org.example.db_project.HelloApplication;
 import org.example.db_project.Medications;
 
 import java.time.LocalDateTime;
@@ -114,8 +113,10 @@ public class hastaAnasayfaController {
     @FXML private DatePicker recetelerim_basla_tarih;
     @FXML private DatePicker recetelerim_bitis_tarih;
 
-    final String sesion_user_id = "221";
-    final String sesion_patient_id = "1";
+    final String sesion_user_id = HelloApplication.userSession.getSesionUserId();
+    final String sesion_patient_id = HelloApplication.userSession.getSesionPatientId();
+
+
 
     @FXML
     void initialize() {
@@ -123,9 +124,7 @@ public class hastaAnasayfaController {
 
         // ----- Yan Panel -----
 
-
         try (Connection conn = connectToDatabase()) {
-            // SQL sorgusu: `patientprofile` görünümünden kullanıcı bilgilerini al
                 String sql = "SELECT * FROM patientprofile WHERE user_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -150,6 +149,7 @@ public class hastaAnasayfaController {
                     panel_cinsiyet.setText(rs.getString("gender"));
                     panel_kan_grubu.setText(rs.getString("bloodtype"));
                     panel_adres.setText(rs.getString("address"));
+                    panel_hasta_tc_label.setText(rs.getString("tc_number"));
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     panel_dogum_tarihi.setText(sdf.format(rs.getDate("date_of_birth")));
@@ -314,7 +314,7 @@ public class hastaAnasayfaController {
     void panel_cikis_button_onaction(ActionEvent event) {
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/giris-sayfasi.fxml"));
             Pane pane = loader.load();
             Scene scene = new Scene(pane);
             Stage stage = (Stage) panel_cikis_button.getScene().getWindow();

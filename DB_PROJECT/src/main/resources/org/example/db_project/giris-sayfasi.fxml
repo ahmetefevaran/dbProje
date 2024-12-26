@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.HelloController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.db_project.Controllers.girisController">
 
     <children>
       <ImageView fitHeight="906.0" fitWidth="1600.0">
@@ -38,7 +38,7 @@
                   <!-- TextFields for name and email input -->
                   <TextField fx:id="tc_field" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" promptText="T.C. Kimlik No" />
                   <TextField fx:id="password_field" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" promptText="Şifre" />
-               <Button fx:id="sifremi_unuttum_button" onAction="#sifremi_unuttum_button_clıckked" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: transparent;" text="şifremi unuttum" textAlignment="RIGHT">
+               <Button fx:id="sifremi_unuttum_button" onAction="#sifremi_unuttum_button_clickked" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: transparent;" text="şifremi unuttum" textAlignment="RIGHT">
                   <opaqueInsets>
                      <Insets />
                   </opaqueInsets>
