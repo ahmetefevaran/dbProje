@@ -509,7 +509,7 @@ public class doktorAnaSayfaController {
                 String name = rs.getString("name");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name));
+                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name, null));
             }
             recetelerimTable.setItems(liste);
 
@@ -598,7 +598,7 @@ public class doktorAnaSayfaController {
                 String name = rs.getString("name");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name));
+                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name,null));
             }
             recetelerimTable.setItems(liste);
 

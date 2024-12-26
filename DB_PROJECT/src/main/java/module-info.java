@@ -4,6 +4,7 @@ module org.example.db_project {
 
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires java.desktop;
 
     opens org.example.db_project to javafx.fxml;
     exports org.example.db_project;
