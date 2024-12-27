@@ -201,6 +201,9 @@ public class doktorAnaSayfaController {
     @FXML
     private VBox panel_yaklasan_randevular_vbox;
 
+    @FXML private TableColumn<Medications, Void> recetelerimDurumColumn;
+
+
     final String sesion_doctor_id = "1";
 
     //Functions
@@ -370,6 +373,8 @@ public class doktorAnaSayfaController {
                 alert.setContentText("Reçete kaydedilirken bir hata oluştu!");
                 alert.show();
             }
+
+            updateReceteler();
         });
 
         // Add components to the popup layout
@@ -434,7 +439,7 @@ public class doktorAnaSayfaController {
     }
 
     @FXML
-    void randevularAraButtonAction(ActionEvent event) {
+    void randevularAraButtonAction() {
         int doctorId = 1;
         String hastaAdi = randevularHastaAdInput.getText();
         LocalDate selectedDate = randevularBaslangicTarihInput.getValue();
@@ -477,7 +482,6 @@ public class doktorAnaSayfaController {
 
     @FXML
     void recetelerimAraButtonAction(ActionEvent event) {
-        int doctorId = 1;
         String hastaAdi = recetelerimHastaAdInput.getText();
         LocalDate selectedDate = recetelerimbaslangicTarihInput.getValue();
 
@@ -525,59 +529,17 @@ public class doktorAnaSayfaController {
 
     void updateRandevular()
     {
-        String sql = "SELECT * FROM doctorappointments";
-        try (Connection conn =connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = pstmt.executeQuery();
-            ObservableList<Appointment> liste = FXCollections.observableArrayList();
-
-            while (rs.next()) {
-                String id = rs.getString("appointment_id");
-                String patientName = rs.getString("patient_name");
-                String appointmentDate = rs.getString("appointment_date");
-                String appointmentTime = rs.getString("appointment_time");
-                String status = rs.getString("status");
-
-
-                // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
-            }
-            randevularTable.setItems(liste);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        randevularAraButtonAction();
     }
 
     void updateRandevuYonet()
     {
-        String sql = "SELECT * FROM doctorAppointments WHERE status = 'planned'";
-        try (Connection conn =connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = pstmt.executeQuery();
-            ObservableList<Appointment> liste = FXCollections.observableArrayList();
-            while (rs.next()) {
-                String id = rs.getString("appointment_id");
-                String patientName = rs.getString("patient_name");
-                String appointmentDate = rs.getString("appointment_date");
-                String appointmentTime = rs.getString("appointment_time");
-                String status = rs.getString("status");
-
-                // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
-            }
-            randevuYonetTable.setItems(liste);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        randevuYonetAraButtonAction(null);
     }
 
     void updateReceteler()
     {
-        String sql = "SELECT pr.medication_name, pr.dosage, pr.prescribed_date, pr.doctor_id, pr.patient_id, u.name " +
+        String sql = "SELECT pr.medication_name, pr.dosage, pr.prescribed_date, pr.doctor_id, pr.patient_id, u.name, pr.prescription_id " +
                 "FROM prescriptions pr " +
                 "JOIN patients p ON pr.patient_id = p.patient_id " +
                 "JOIN users u ON p.user_id = u.user_id ";
@@ -596,9 +558,10 @@ public class doktorAnaSayfaController {
                 String prescribed_at = rs.getString("prescribed_date");
                 String dosage = rs.getString("dosage");
                 String name = rs.getString("name");
+                String prescriptionId = rs.getString("prescription_id");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name,null));
+                liste.add(new Medications(prescriptionId, doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name,null));
             }
             recetelerimTable.setItems(liste);
 
@@ -676,6 +639,7 @@ public class doktorAnaSayfaController {
                     panel_tel_no.setText(rs.getString("phone"));
                     panel_cinsiyet.setText(rs.getString("gender"));
                     panel_poliklinik.setText(rs.getString("specialization"));
+                    panel_doktor_tc_label.setText(rs.getString("tc_number"));
 
                 } else {
                     System.out.println("Doktor bilgisi bulunamadı.");
@@ -697,7 +661,7 @@ public class doktorAnaSayfaController {
         randevularIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         patientColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentDate"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentDate"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTime"));
         randevularDurumColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         // reçetelerim icin veri bağlama
@@ -756,6 +720,47 @@ public class doktorAnaSayfaController {
                 };
             }
         });
+
+        recetelerimDurumColumn.setCellFactory(new Callback<>() {
+            //Sil butonuna tıklanınca burası çalışıyor
+            @Override
+            public TableCell<Medications, Void> call(final TableColumn<Medications, Void> param) {
+                return new TableCell<>() {
+                    private final Button button = new Button("Reçeteyi sil");
+
+                    {
+                        button.setOnAction(event -> {
+
+                            String updateSql = "DELETE FROM prescriptions " +
+                                    "WHERE prescription_id = ?";
+
+                            try (Connection conn =connectToDatabase();
+                                 PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                                Medications data = getTableView().getItems().get(getIndex());
+
+                                pstmt.setInt(1,Integer.valueOf(data.getPrescription_id()));
+                                pstmt.executeQuery();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            updateReceteler();
+                        });
+                    }
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(button);
+                        }
+                    }
+                };
+            }
+        });
+
 
         updateRandevular();
         updateRandevuYonet();
