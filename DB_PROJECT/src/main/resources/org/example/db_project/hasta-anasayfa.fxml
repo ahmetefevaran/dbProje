@@ -88,13 +88,16 @@
                                        <children>
                                           <DatePicker fx:id="randevu_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
                                           <DatePicker fx:id="randevu_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
-                                          <TextField fx:id="randevular_doktor_adi" prefHeight="35.0" prefWidth="200.0" promptText="Doktor adına göre ara..." />
+                                          <TextField fx:id="randevular_doktor_adi" prefHeight="35.0" prefWidth="200.0" promptText="Doktor adına göre ara...">
+                                             <HBox.margin>
+                                                <Insets left="25.0" />
+                                             </HBox.margin></TextField>
                                           <Button fx:id="randevu_yonet_ara_button" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" onAction="#randevu_yonet_ara_button_onaction" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
                                              <HBox.margin>
-                                                <Insets />
+                                                <Insets left="25.0" />
                                              </HBox.margin>
                                              <graphic>
                                                 <ImageView fitHeight="25.0" fitWidth="25.0">
@@ -193,9 +196,12 @@
                                              </ImageView>
                                           </graphic>
                                           <HBox.margin>
-                                             <Insets />
+                                             <Insets left="25.0" />
                                           </HBox.margin>
                                        </Button>
+                                       <VBox.margin>
+                                          <Insets left="25.0" />
+                                       </VBox.margin>
                                       </HBox>
                                       <TableView fx:id="recetelerim_tableView" prefHeight="200">
                                           <columns>
