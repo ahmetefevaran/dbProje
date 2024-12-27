@@ -160,13 +160,10 @@ public class doktorAnaSayfaController {
     @FXML
     private Label receteLabel;
 
-    final String sesion_user_id = "1";
+    final String sesion_user_id = "2";
 
     @FXML
     private Button newPrescription;
-
-    @FXML
-    private Label panel_adres;
 
     @FXML
     private Button panel_cikis_button;
@@ -196,10 +193,10 @@ public class doktorAnaSayfaController {
     private ImageView panel_hasta_image;
 
     @FXML
-    private Label panel_kan_grubu;
+    private Label panel_tel_no;
 
     @FXML
-    private Label panel_tel_no;
+    private Label panel_poliklinik;
 
     @FXML
     private VBox panel_yaklasan_randevular_vbox;
@@ -300,7 +297,7 @@ public class doktorAnaSayfaController {
     void panel_cikis_button_onaction(ActionEvent event) {
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/db_project/giris-sayfasi.fxml"));
             Pane pane = loader.load();
             Scene scene = new Scene(pane);
             Stage stage = (Stage) panel_cikis_button.getScene().getWindow();
@@ -655,8 +652,8 @@ public class doktorAnaSayfaController {
         randevularTamamlanmaDurumuInput.setItems(options);
 
         try (Connection conn = connectToDatabase()) {
-            // SQL sorgusu: `patientprofile` görünümünden kullanıcı bilgilerini al
-            String sql = "SELECT * FROM patientprofile WHERE user_id = ?";
+            // SQL sorgusu: `doctorprofile` görünümünden kullanıcı bilgilerini al
+            String sql = "SELECT * FROM doctorprofile WHERE user_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
                 int userId = Integer.parseInt(sesion_user_id);
@@ -678,14 +675,10 @@ public class doktorAnaSayfaController {
                     panel_email.setText(rs.getString("email"));
                     panel_tel_no.setText(rs.getString("phone"));
                     panel_cinsiyet.setText(rs.getString("gender"));
-                    panel_kan_grubu.setText(rs.getString("bloodtype"));
-                    panel_adres.setText(rs.getString("address"));
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    panel_dogum_tarihi.setText(sdf.format(rs.getDate("date_of_birth")));
+                    panel_poliklinik.setText(rs.getString("specialization"));
 
                 } else {
-                    System.out.println("Hasta bilgisi bulunamadı.");
+                    System.out.println("Doktor bilgisi bulunamadı.");
                 }
             }
         } catch (Exception e) {
