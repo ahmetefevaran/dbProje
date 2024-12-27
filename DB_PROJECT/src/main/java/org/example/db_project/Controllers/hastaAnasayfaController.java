@@ -244,6 +244,7 @@ public class hastaAnasayfaController {
 
 
         // ----- Tahlil -----
+        updateTahlil();
         assert tahlil_ara_button != null : "fx:id=\"recetelerim_ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_basla_tarih != null : "fx:id=\"tahlil_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_arama_kismi != null : "fx:id=\"tahlil_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -594,7 +595,6 @@ public class hastaAnasayfaController {
         }
     }
 
-
     void updateReceteler() {
         String doktorAdi = recetelerim_arama_kismi.getText();
         LocalDate baslangic_date = recetelerim_basla_tarih.getValue();
@@ -655,20 +655,21 @@ public class hastaAnasayfaController {
         String tahlilAdi = tahlil_arama_kismi.getText();
         LocalDate baslangic_date = tahlil_basla_tarih.getValue();
 
-        String sql = "SELECT * " +
-                "FROM tests t " +
+
+        String sql = "SELECT t.name AS analysis_name, t.date, t.result, u.name AS doctor_name " +
+                "FROM analysis t " +
                 "JOIN patients p ON p.patient_id = t.patient_id " +
                 "JOIN doctors d ON t.doctor_id = d.doctor_id " +
                 "JOIN users u ON u.user_id = d.user_id " +
                 "WHERE p.patient_id = ? ";
 
         if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
-            sql += "AND t.test_name LIKE ? ";
+            sql += "AND t.name LIKE ? ";
         }
         if (baslangic_date != null) {
-            sql += "AND t.test_date >= ? ";
+            sql += "AND t.date >= ? ";
         }
-        sql += "ORDER BY t.test_date DESC";
+        sql += "ORDER BY t.date DESC";
 
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -687,10 +688,10 @@ public class hastaAnasayfaController {
             ObservableList<TestResults> liste = FXCollections.observableArrayList();
 
             while (rs.next()) {
-                String testName = rs.getString("test_name");
-                String testDate = rs.getString("test_date");
-                String testResult = rs.getString("test_result");
-                String doctorName = rs.getString("name");
+                String testName = rs.getString("analysis_name");
+                String testDate = rs.getString("date");
+                String testResult = rs.getString("result");
+                String doctorName = rs.getString("doctor_name");
 
                 liste.add(new TestResults(testName, testDate, testResult, doctorName, null));
             }

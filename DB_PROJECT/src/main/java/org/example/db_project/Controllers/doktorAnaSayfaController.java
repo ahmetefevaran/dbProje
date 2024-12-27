@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import org.example.db_project.Medications;
+import org.example.db_project.TestResults;
 
 public class doktorAnaSayfaController {
 
@@ -569,6 +570,65 @@ public class doktorAnaSayfaController {
             e.printStackTrace();
         }
     }
+
+
+    void updateTahlil() {
+        String tahlilAdi = tahlil_arama_kismi.getText();
+        LocalDate baslangic_date = tahlil_basla_tarih.getValue();
+
+
+        String sql = "SELECT t.name AS analysis_name, t.date, t.result, u.name AS doctor_name " +
+                "FROM analysis t " +
+                "JOIN patients p ON p.patient_id = t.patient_id " +
+                "JOIN doctors d ON t.doctor_id = d.doctor_id " +
+                "JOIN users u ON u.user_id = d.user_id " +
+                "WHERE p.patient_id = ? ";
+
+        if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
+            sql += "AND t.name LIKE ? ";
+        }
+        if (baslangic_date != null) {
+            sql += "AND t.date >= ? ";
+        }
+        sql += "ORDER BY t.date DESC";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_doctor_id));
+
+            int index = 2;
+            if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
+                pstmt.setString(index++, "%" + tahlilAdi + "%");
+            }
+            if (baslangic_date != null) {
+                pstmt.setDate(index++, Date.valueOf(baslangic_date));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+            ObservableList<TestResults> liste = FXCollections.observableArrayList();
+
+            while (rs.next()) {
+                String testName = rs.getString("analysis_name");
+                String testDate = rs.getString("date");
+                String testResult = rs.getString("result");
+                String doctorName = rs.getString("doctor_name");
+
+                liste.add(new TestResults(testName, testDate, testResult, doctorName, null));
+            }
+
+            tahlil_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
+            tahlil_sonucColumn.setCellValueFactory(new PropertyValueFactory<>("testResult"));
+            tahlil_tahliladiColumn.setCellValueFactory(new PropertyValueFactory<>("testName"));
+            tahlil_doktorColumn.setCellValueFactory(new PropertyValueFactory<>("doctorName"));
+
+            tahlil_tableView.setItems(liste);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     void initialize() {
