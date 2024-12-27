@@ -21,10 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.example.db_project.Appointment;
-import org.example.db_project.Doctors;
-import org.example.db_project.HelloApplication;
-import org.example.db_project.Medications;
+import org.example.db_project.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,10 +58,9 @@ public class hastaAnasayfaController {
 
     @FXML private TableColumn<?, ?> tahlil_tarihColumn;
     @FXML private TableColumn<?, ?> tahlil_doktorColumn;
-    @FXML private TableColumn<?, ?> tahlil_notColumn;
-    @FXML private TableColumn<?, ?> tahlil_poliklinkColumn;
+    @FXML private TableColumn<?, ?> tahlil_tahliladiColumn;
     @FXML private TableColumn<?, ?> tahlil_sonucColumn;
-    @FXML private TableView<?> tahlil_tableView;
+    @FXML private TableView<TestResults> tahlil_tableView;
 
 
     @FXML private TableColumn<?, ?> recetelerim_tarihColumn;
@@ -81,7 +77,6 @@ public class hastaAnasayfaController {
     @FXML private Label panel_hasta_tc_label;
     @FXML private Button panel_duzenle_button;
     @FXML private VBox panel_yaklasan_randevular_vbox;
-    @FXML private VBox panel_yeni_recete_vbox;
     @FXML private Label panel_email;
     @FXML private Label panel_adres;
     @FXML private Label panel_cinsiyet;
@@ -106,15 +101,14 @@ public class hastaAnasayfaController {
     @FXML private DatePicker randevu_bitis_tarih;
 
 
-    @FXML private Button ara_button1;
+    @FXML private Button tahlil_ara_button;
+    @FXML private TextField tahlil_arama_kismi;
     @FXML private DatePicker tahlil_basla_tarih;
-    @FXML private DatePicker tahlil_bitis_tarih;
 
 
-    @FXML private Button ara_button2;
+    @FXML private Button recetelerim_ara_button;
     @FXML private TextField recetelerim_arama_kismi;
     @FXML private DatePicker recetelerim_basla_tarih;
-    @FXML private DatePicker recetelerim_bitis_tarih;
 
 
     final String sesion_user_id = HelloApplication.userSession.getSesionUserId();
@@ -146,7 +140,6 @@ public class hastaAnasayfaController {
         assert panel_kan_grubu != null : "fx:id=\"panel_kan_grubu\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_tel_no != null : "fx:id=\"panel_tel_no\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert panel_yaklasan_randevular_vbox != null : "fx:id=\"panel_yaklasan_randevular_vbox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert panel_yeni_recete_vbox != null : "fx:id=\"panel_yeni_recete_vbox\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
 
         // ----- Randevu Sorgu -----
@@ -251,12 +244,11 @@ public class hastaAnasayfaController {
 
 
         // ----- Tahlil -----
-        assert ara_button1 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert tahlil_ara_button != null : "fx:id=\"recetelerim_ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_basla_tarih != null : "fx:id=\"tahlil_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tahlil_bitis_tarih != null : "fx:id=\"tahlil_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert tahlil_arama_kismi != null : "fx:id=\"tahlil_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_doktorColumn != null : "fx:id=\"tahlil_doktorColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tahlil_notColumn != null : "fx:id=\"tahlil_notColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert tahlil_poliklinkColumn != null : "fx:id=\"tahlil_poliklinkColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert tahlil_tahliladiColumn != null : "fx:id=\"tahlil_tahliladiColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_sonucColumn != null : "fx:id=\"tahlil_sonucColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_tableView != null : "fx:id=\"tahlil_tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert tahlil_tarihColumn != null : "fx:id=\"tahlil_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -265,10 +257,9 @@ public class hastaAnasayfaController {
         // ----- Reçeteler -----
 
         updateReceteler();
-        assert ara_button2 != null : "fx:id=\"ara_button2\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
+        assert recetelerim_ara_button != null : "fx:id=\"recetelerim_ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_arama_kismi != null : "fx:id=\"recetelerim_arama_kismi\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_basla_tarih != null : "fx:id=\"recetelerim_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
-        assert recetelerim_bitis_tarih != null : "fx:id=\"recetelerim_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_doktorColumn != null : "fx:id=\"recetelerim_doktorColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_dozColumn != null : "fx:id=\"recetelerim_dozColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_ilacColumn != null : "fx:id=\"recetelerim_ilacColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -526,6 +517,17 @@ public class hastaAnasayfaController {
         updateRandevulariYonet();
     }
 
+    @FXML
+    void recetelerim_ara_button_onaction(ActionEvent event) {
+        updateReceteler();
+    }
+
+    @FXML
+    void tahlil_ara_button_onaction(ActionEvent event) {
+        updateTahlil();
+    }
+
+
     void updateRandevulariYonet() {
         String doktorAdi = randevular_doktor_adi.getText();
         LocalDate baslangic_date = randevu_basla_tarih.getValue();
@@ -593,33 +595,48 @@ public class hastaAnasayfaController {
     }
 
 
-    void updateReceteler()
-    {
+    void updateReceteler() {
+        String doktorAdi = recetelerim_arama_kismi.getText();
+        LocalDate baslangic_date = recetelerim_basla_tarih.getValue();
 
         String sql = "SELECT * " +
                 "FROM prescriptions pr " +
                 "JOIN patients p ON p.patient_id = pr.patient_id " +
                 "JOIN doctors d ON pr.doctor_id = d.doctor_id " +
                 "JOIN users u ON u.user_id = d.user_id " +
-                "WHERE p.patient_id = ?";
+                "WHERE p.patient_id = ? ";
+
+        if (doktorAdi != null && !doktorAdi.isEmpty()) {
+            sql += "AND pr.medication_name LIKE ? ";
+        }
+        if (baslangic_date != null) {
+            sql += "AND pr.prescribed_date >= ? ";
+        }
+        sql += "ORDER BY pr.prescribed_date DESC";
 
         try (Connection conn = connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+
+            int index = 2; // Start from the 2nd parameter
+            if (doktorAdi != null && !doktorAdi.isEmpty()) {
+                pstmt.setString(index++, "%" + doktorAdi + "%"); // Doctor name (LIKE)
+            }
+            if (baslangic_date != null) {
+                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
+            }
 
             ResultSet rs = pstmt.executeQuery();
-
             ObservableList<Medications> liste = FXCollections.observableArrayList();
+
             while (rs.next()) {
-
-
                 String ilacAdi = rs.getString("medication_name");
                 String prescribed_at = rs.getString("prescribed_date");
                 String dosage = rs.getString("dosage");
-                String name = rs.getString("name");
+                String doctorName = rs.getString("name");
 
-                liste.add(new Medications("1", null, null, ilacAdi, dosage, prescribed_at,null, name));
+                liste.add(new Medications("1", null, null, ilacAdi, dosage, prescribed_at, null, doctorName));
             }
 
             recetelerim_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("prescribed_at"));
@@ -627,13 +644,72 @@ public class hastaAnasayfaController {
             recetelerim_ilacColumn.setCellValueFactory(new PropertyValueFactory<>("medication_name"));
             recetelerim_dozColumn.setCellValueFactory(new PropertyValueFactory<>("dosage_instructions"));
 
-
             recetelerim_tableView.setItems(liste);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    void updateTahlil() {
+        String tahlilAdi = tahlil_arama_kismi.getText();
+        LocalDate baslangic_date = tahlil_basla_tarih.getValue();
+
+        String sql = "SELECT * " +
+                "FROM tests t " +
+                "JOIN patients p ON p.patient_id = t.patient_id " +
+                "JOIN doctors d ON t.doctor_id = d.doctor_id " +
+                "JOIN users u ON u.user_id = d.user_id " +
+                "WHERE p.patient_id = ? ";
+
+        if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
+            sql += "AND t.test_name LIKE ? ";
+        }
+        if (baslangic_date != null) {
+            sql += "AND t.test_date >= ? ";
+        }
+        sql += "ORDER BY t.test_date DESC";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
+
+            int index = 2;
+            if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
+                pstmt.setString(index++, "%" + tahlilAdi + "%");
+            }
+            if (baslangic_date != null) {
+                pstmt.setDate(index++, Date.valueOf(baslangic_date));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+            ObservableList<TestResults> liste = FXCollections.observableArrayList();
+
+            while (rs.next()) {
+                String testName = rs.getString("test_name");
+                String testDate = rs.getString("test_date");
+                String testResult = rs.getString("test_result");
+                String doctorName = rs.getString("name");
+
+                liste.add(new TestResults(testName, testDate, testResult, doctorName, null));
+            }
+
+            tahlil_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
+            tahlil_sonucColumn.setCellValueFactory(new PropertyValueFactory<>("testResult"));
+            tahlil_tahliladiColumn.setCellValueFactory(new PropertyValueFactory<>("testName"));
+            tahlil_doktorColumn.setCellValueFactory(new PropertyValueFactory<>("doctorName"));
+
+            tahlil_tableView.setItems(liste);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
 
 
@@ -649,7 +725,7 @@ public class hastaAnasayfaController {
             pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
             ResultSet rs = pstmt.executeQuery();
 
-            panel_yaklasan_randevular_vbox.getChildren().clear(); // İlk önce VBox'ı boşaltıyoruz
+            panel_yaklasan_randevular_vbox.getChildren().clear();
 
             if (!rs.next()) {
                 Label noAppointmentsLabel = new Label("Yaklaşan randevunuz bulunmamaktadır.");
@@ -695,18 +771,15 @@ public class hastaAnasayfaController {
 
     @FXML
     void panel_duzenle_button_onaction(ActionEvent event) {
-        // Create a new stage for the popup
         Stage popupStage = new Stage();
-        popupStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with the main window
+        popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Profil Düzenle");
 
-        // Layout for the popup
         GridPane popupLayout = new GridPane();
         popupLayout.setPadding(new Insets(10));
         popupLayout.setHgap(10);
         popupLayout.setVgap(10);
 
-        // Fields for user input
         Label addressLabel = new Label("Adres:");
         TextField addressField = new TextField();
         addressField.setPromptText("Adres");
@@ -719,24 +792,21 @@ public class hastaAnasayfaController {
         TextField emailField = new TextField();
         emailField.setPromptText("E-posta");
 
-        // Save button
         Button kaydetButton = new Button("Kaydet");
         kaydetButton.setOnAction(e -> {
-            // Retrieve input values
+
             String address = addressField.getText();
             String telefon = telefonField.getText();
             String email = emailField.getText();
 
             boolean isUpdated = false;
 
-            // Address update (if provided)
             if (!address.isEmpty()) {
                 System.out.println("Adres güncelleniyor: " + address);
                 isUpdated = updateAddress(address);
 
             }
 
-            // Telefon numarası update (if provided and valid)
             if (!telefon.isEmpty()) {
                 if (!telefon.matches("\\d{10}") || telefon.startsWith("0")) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -749,7 +819,6 @@ public class hastaAnasayfaController {
 
             }
 
-            // Email update (if provided)
             if (!email.isEmpty()) {
                 System.out.println("E-posta güncelleniyor: " + email);
                 isUpdated = updateEmail(email);
@@ -770,7 +839,6 @@ public class hastaAnasayfaController {
             }
         });
 
-        // Add components to the layout
         popupLayout.add(addressLabel, 0, 0);
         popupLayout.add(addressField, 1, 0);
         popupLayout.add(telefonLabel, 0, 1);
@@ -779,7 +847,6 @@ public class hastaAnasayfaController {
         popupLayout.add(emailField, 1, 2);
         popupLayout.add(kaydetButton, 1, 3);
 
-        // Set the scene and show the popup
         Scene popupScene = new Scene(popupLayout, 400, 250);
         popupStage.setScene(popupScene);
         popupStage.showAndWait();

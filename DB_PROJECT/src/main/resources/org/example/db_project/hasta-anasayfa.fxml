@@ -129,8 +129,12 @@
                                     <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                        <children>
                                           <DatePicker fx:id="tahlil_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
-                                          <DatePicker fx:id="tahlil_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
-                                          <Button fx:id="ara_button1" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
+                                          <TextField fx:id="tahlil_arama_kismi" prefHeight="35.0" prefWidth="200.0" promptText="Tahlil adına göre ara...">
+                                             <HBox.margin>
+                                                <Insets left="25.0" />
+                                             </HBox.margin>
+                                          </TextField>
+                                          <Button fx:id="tahlil_ara_button" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" onAction="#tahlil_ara_button_onaction" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -144,17 +148,19 @@
                                                    </viewport>
                                                 </ImageView>
                                              </graphic>
+                                             <HBox.margin>
+                                                <Insets left="25.0" />
+                                             </HBox.margin>
                                           </Button>
                                        </children>
                                     </HBox>
                                   <VBox alignment="TOP_LEFT" spacing="5">
                                      <TableView fx:id="tahlil_tableView" prefHeight="308.0" prefWidth="900.0">
                                          <columns>
-                                             <TableColumn fx:id="tahlil_tarihColumn" prefWidth="200.0" text="Tarih" />
-                                             <TableColumn fx:id="tahlil_poliklinkColumn" prefWidth="200.0" text="Poliklink" />
-                                             <TableColumn fx:id="tahlil_doktorColumn" prefWidth="200.0" text="Doktor" />
-                                             <TableColumn fx:id="tahlil_sonucColumn" prefWidth="200.0" text="Sonuç" />
-                                             <TableColumn fx:id="tahlil_notColumn" prefWidth="200.0" text="Not" />
+                                             <TableColumn fx:id="tahlil_tarihColumn" prefWidth="250.0" text="Tarih" />
+                                             <TableColumn fx:id="tahlil_tahliladiColumn" prefWidth="250.0" text="Tahlil Adı" />
+                                             <TableColumn fx:id="tahlil_doktorColumn" prefWidth="250.0" text="Doktor" />
+                                             <TableColumn fx:id="tahlil_sonucColumn" prefWidth="250.0" text="Sonuç" />
                                          </columns>
                                      </TableView>
                                   </VBox>
@@ -168,12 +174,11 @@
                                   <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="1000.0" spacing="25.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0">
                                       <HBox prefHeight="40.0" prefWidth="900.0" spacing="20.0">
                                           <DatePicker fx:id="recetelerim_basla_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Başlangıç Tarihi" />
-                                          <DatePicker fx:id="recetelerim_bitis_tarih" prefHeight="35.0" prefWidth="225.0" promptText="Bitiş Tarihi" />
                                           <TextField fx:id="recetelerim_arama_kismi" prefHeight="35.0" prefWidth="200.0" promptText="İlaç adına göre ara...">
                                           <HBox.margin>
-                                             <Insets />
+                                             <Insets left="25.0" />
                                           </HBox.margin></TextField>
-                                       <Button fx:id="ara_button2" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
+                                       <Button fx:id="recetelerim_ara_button" maxHeight="52.0" maxWidth="52.0" minHeight="0.0" minWidth="47.0" mnemonicParsing="false" onAction="#recetelerim_ara_button_onaction" prefHeight="47.0" prefWidth="47.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.2;">
                                           <font>
                                              <Font size="16.0" />
                                           </font>
@@ -187,6 +192,9 @@
                                                 </viewport>
                                              </ImageView>
                                           </graphic>
+                                          <HBox.margin>
+                                             <Insets />
+                                          </HBox.margin>
                                        </Button>
                                       </HBox>
                                       <TableView fx:id="recetelerim_tableView" prefHeight="200">
