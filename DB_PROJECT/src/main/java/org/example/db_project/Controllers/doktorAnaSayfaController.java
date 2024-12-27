@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
+import org.example.db_project.HelloApplication;
 import org.example.db_project.Medications;
 import org.example.db_project.TestResults;
 
@@ -161,7 +162,6 @@ public class doktorAnaSayfaController {
     @FXML
     private Label receteLabel;
 
-    final String sesion_user_id = "2";
 
     @FXML
     private Button newPrescription;
@@ -204,8 +204,8 @@ public class doktorAnaSayfaController {
 
     @FXML private TableColumn<Medications, Void> recetelerimDurumColumn;
 
-
-    final String sesion_doctor_id = "1";
+    final String sesion_user_id = HelloApplication.userSession.getSesionUserId();
+    final String sesion_doctor_id = HelloApplication.userSession.getSesionDoctorId();
 
     //Functions
     private String getPatientIdByTC(String tcNumber) {
@@ -230,7 +230,7 @@ public class doktorAnaSayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, Integer.parseInt(patientId));
-            pstmt.setInt(2, 1); // Replace with the correct doctor ID
+            pstmt.setInt(2, Integer.parseInt(sesion_doctor_id)); // Replace with the correct doctor ID
             pstmt.setString(3, medicationName);
             pstmt.setInt(4, Integer.parseInt(dosage));
             pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
@@ -408,7 +408,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void randevuYonetAraButtonAction(ActionEvent event) {
-        int doctorId = 1;
+
         String hastaAdi = randevuYonetHastaAdInput.getText();
         LocalDate selectedDate = randevuYonetbaslangicTarihInput.getValue();
 
@@ -417,7 +417,7 @@ public class doktorAnaSayfaController {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             if (selectedDate == null) selectedDate = LocalDate.now();
 
-            pstmt.setInt(1,doctorId);
+            pstmt.setInt(1,Integer.valueOf(sesion_doctor_id));
             pstmt.setString(2,"%"+hastaAdi+"%");
             pstmt.setTimestamp(3, Timestamp.valueOf(selectedDate.atStartOfDay()));
             ResultSet rs = pstmt.executeQuery();
@@ -430,7 +430,7 @@ public class doktorAnaSayfaController {
                 String status = rs.getString("status");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status, sesion_user_id));
+                liste.add(new Appointment(id,null,patientName, appointmentDate, appointmentTime,null,status, sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
 
@@ -441,7 +441,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void randevularAraButtonAction() {
-        int doctorId = 1;
+
         String hastaAdi = randevularHastaAdInput.getText();
         LocalDate selectedDate = randevularBaslangicTarihInput.getValue();
         String statusInput = (String) randevularTamamlanmaDurumuInput.getValue();
@@ -451,7 +451,7 @@ public class doktorAnaSayfaController {
         try (Connection conn =connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1,doctorId);
+            pstmt.setInt(1,Integer.valueOf(sesion_doctor_id));
             pstmt.setString(2,"%"+hastaAdi+"%");
             if (statusInput !=null && !statusInput.equals("all")) pstmt.setString(3,statusInput);
             if (selectedDate !=null)
@@ -472,7 +472,7 @@ public class doktorAnaSayfaController {
 
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Appointment(id,"1",patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
+                liste.add(new Appointment(id,null,patientName, appointmentDate, appointmentTime,null,status,sesion_user_id));
             }
             randevularTable.setItems(liste);
 
@@ -487,7 +487,7 @@ public class doktorAnaSayfaController {
         LocalDate selectedDate = recetelerimbaslangicTarihInput.getValue();
 
 
-        String sql = "SELECT pr.medication_name, pr.dosage, pr.prescribed_date, pr.doctor_id, pr.patient_id, u.name " +
+        String sql = "SELECT pr.medication_name, pr.dosage, pr.prescribed_date, pr.doctor_id, pr.patient_id, u.name, pr.prescription_id " +
                 "FROM prescriptions pr " +
                 "JOIN patients p ON pr.patient_id = p.patient_id " +
                 "JOIN users u ON p.user_id = u.user_id " +
@@ -512,9 +512,10 @@ public class doktorAnaSayfaController {
                 String prescribed_at = rs.getString("prescribed_date");
                 String dosage = rs.getString("dosage");
                 String name = rs.getString("name");
+                String prescriptionId = rs.getString("prescription_id");
 
                 // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications("1", doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name, null));
+                liste.add(new Medications(prescriptionId, doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name,null));
             }
             recetelerimTable.setItems(liste);
 
@@ -540,35 +541,8 @@ public class doktorAnaSayfaController {
 
     void updateReceteler()
     {
-        String sql = "SELECT pr.medication_name, pr.dosage, pr.prescribed_date, pr.doctor_id, pr.patient_id, u.name, pr.prescription_id " +
-                "FROM prescriptions pr " +
-                "JOIN patients p ON pr.patient_id = p.patient_id " +
-                "JOIN users u ON p.user_id = u.user_id ";
+        recetelerimAraButtonAction(null);
 
-        try (Connection conn =connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-
-            ResultSet rs = pstmt.executeQuery();
-
-            ObservableList<Medications> liste = FXCollections.observableArrayList();
-            while (rs.next()) {
-                String ilacAdi = rs.getString("medication_name");
-                String patient_id = rs.getString("patient_id");
-                String doctor_id = rs.getString("doctor_id");
-                String prescribed_at = rs.getString("prescribed_date");
-                String dosage = rs.getString("dosage");
-                String name = rs.getString("name");
-                String prescriptionId = rs.getString("prescription_id");
-
-                // Appointment nesnesi oluştur ve listeye ekle
-                liste.add(new Medications(prescriptionId, doctor_id, patient_id, ilacAdi, dosage, prescribed_at,name,null));
-            }
-            recetelerimTable.setItems(liste);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
