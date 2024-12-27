@@ -688,9 +688,6 @@ public class doktorAnaSayfaController {
         setYaklasanRandevular();
 
 
-
-
-
         // randevu yönet icin veri bağlama
         idRow.setCellValueFactory(new PropertyValueFactory<>("id"));
         hastaAdiRow.setCellValueFactory(new PropertyValueFactory<>("patientName"));
@@ -763,8 +760,6 @@ public class doktorAnaSayfaController {
         updateRandevular();
         updateRandevuYonet();
         updateReceteler();
-
-
 
     }
 }
