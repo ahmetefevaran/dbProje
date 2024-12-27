@@ -7,7 +7,7 @@
     <list default="true" id="9bc0978b-a7b1-4dfe-9395-7bc25f9738e6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB_PROJECT/src/main/java/org/example/db_project/Controllers/doktorAnaSayfaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DB_PROJECT/src/main/java/org/example/db_project/Controllers/doktorAnaSayfaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB_PROJECT/src/main/java/org/example/db_project/Controllers/hastaAnasayfaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DB_PROJECT/src/main/java/org/example/db_project/Controllers/hastaAnasayfaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB_PROJECT/src/main/resources/org/example/db_project/doktor-anasayfa.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/DB_PROJECT/src/main/resources/org/example/db_project/doktor-anasayfa.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

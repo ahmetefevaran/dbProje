@@ -22,7 +22,6 @@ import org.example.db_project.Appointment;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -79,8 +78,6 @@ public class doktorAnaSayfaController {
     @FXML
     private TableColumn<?, ?> patientColumn;
 
-    @FXML
-    private TableColumn<?, ?> policlinicCloumn;
 
     @FXML
     private Button randevuYonetAraButton;
@@ -141,17 +138,21 @@ public class doktorAnaSayfaController {
     private TableColumn<?, ?> tahlilDateColumn;
 
     @FXML
-    private TextField tahlilHastaAdInput;
+    private TextField tahlilAdInput;
+    
 
     @FXML
     private TextField tahlilPoliklinikInput;
 
     @FXML
-    private TableView<?> tahlilSonucTable;
+    private TableView<TestResults> tahlilSonucTable;
 
 
     @FXML
     private TableColumn<?, ?> timeColumn;
+
+    @FXML
+    private TableColumn<?, ?> tabloTahlilAdi;
 
     @FXML
     private ComboBox<String> randevularTamamlanmaDurumuInput;
@@ -526,7 +527,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void tahlilAraButtonAction(ActionEvent event) {
-
+        updateTahlil();
     }
 
     void updateRandevular()
@@ -547,16 +548,16 @@ public class doktorAnaSayfaController {
 
 
     void updateTahlil() {
-        String tahlilAdi = tahlil_arama_kismi.getText();
-        LocalDate baslangic_date = tahlil_basla_tarih.getValue();
+        String tahlilAdi = tahlilAdInput.getText();
+        LocalDate baslangic_date = tahlilBaslangicTarihInput.getValue();
 
 
-        String sql = "SELECT t.name AS analysis_name, t.date, t.result, u.name AS doctor_name " +
+        String sql = "SELECT t.name AS analysis_name, t.date, t.sonuc, u.name AS patient_name " +
                 "FROM analysis t " +
                 "JOIN patients p ON p.patient_id = t.patient_id " +
                 "JOIN doctors d ON t.doctor_id = d.doctor_id " +
-                "JOIN users u ON u.user_id = d.user_id " +
-                "WHERE p.patient_id = ? ";
+                "JOIN users u ON u.user_id = p.user_id " +
+                "WHERE d.doctor_id = ? ";
 
         if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
             sql += "AND t.name LIKE ? ";
@@ -585,18 +586,18 @@ public class doktorAnaSayfaController {
             while (rs.next()) {
                 String testName = rs.getString("analysis_name");
                 String testDate = rs.getString("date");
-                String testResult = rs.getString("result");
-                String doctorName = rs.getString("doctor_name");
+                String testResult = rs.getString("sonuc");
+                String patientName = rs.getString("patient_name");
 
-                liste.add(new TestResults(testName, testDate, testResult, doctorName, null));
+                liste.add(new TestResults(testName, testDate, testResult,null, patientName));
             }
 
-            tahlil_tarihColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
-            tahlil_sonucColumn.setCellValueFactory(new PropertyValueFactory<>("testResult"));
-            tahlil_tahliladiColumn.setCellValueFactory(new PropertyValueFactory<>("testName"));
-            tahlil_doktorColumn.setCellValueFactory(new PropertyValueFactory<>("doctorName"));
+            tahlilDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
+            sonucColumn.setCellValueFactory(new PropertyValueFactory<>("testResult"));
+            tabloTahlilAdi.setCellValueFactory(new PropertyValueFactory<>("testName"));
+            hastaAdiColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
 
-            tahlil_tableView.setItems(liste);
+            tahlilSonucTable.setItems(liste);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -634,7 +635,7 @@ public class doktorAnaSayfaController {
         assert recetelerimbaslangicTarihInput != null : "fx:id=\"recetelerimbaslangicTarihInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert tahlilAraButton != null : "fx:id=\"tahlilAraButton\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert tahlilBaslangicTarihInput != null : "fx:id=\"tahlilBaslangicTarihInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
-        assert tahlilHastaAdInput != null : "fx:id=\"tahlilHastaAdInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
+        assert tahlilAdInput != null : "fx:id=\"tahlilAdInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert tahlilPoliklinikInput != null : "fx:id=\"tahlilPoliklinikInput\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert tahlilSonucTable != null : "fx:id=\"tahlilSonucTable\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
         assert tarihColumn != null : "fx:id=\"tarihColumn\" was not injected: check your FXML file 'doktor-anasayfa.fxml'.";
@@ -799,6 +800,7 @@ public class doktorAnaSayfaController {
         updateRandevular();
         updateRandevuYonet();
         updateReceteler();
+        updateTahlil();
 
     }
 }
