@@ -28,7 +28,7 @@
               <VBox alignment="CENTER" prefHeight="285.0" prefWidth="800.0" spacing="15.0">
       
                   <!-- Title Label -->
-                  <Label prefHeight="72.0" prefWidth="204.0" style="-fx-font-weight: bold;" text="Hoş Geldiniz ">
+                  <Label prefHeight="72.0" prefWidth="245.0" style="-fx-font-weight: bold;" text="Hoş Geldiniz ">
                   <font>
                      <Font size="36.0" />
                   </font>
