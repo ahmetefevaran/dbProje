@@ -478,8 +478,24 @@ public class hastaAnasayfaController {
                         sifirla();
 
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        String errorMessage = e.getMessage();
+
+                        String[] parts = errorMessage.split("Where:");
+                        if (parts.length > 0) {
+                            errorMessage = parts[0].replace("ERROR:", "").trim();
+                        }
+
+                        Alert info_alert = new Alert(Alert.AlertType.INFORMATION);
+                        info_alert.setTitle("Hata");
+                        info_alert.setHeaderText(null);
+                        info_alert.setContentText(errorMessage);
+                        yesButton = new ButtonType("Devam Et", ButtonBar.ButtonData.OK_DONE);
+                        info_alert.getButtonTypes().setAll(yesButton);
+                        info_alert.showAndWait();
                     }
+
+
+
                 } else {
                     System.out.println("Hasta bilgisi bulunamadı.");
                 }
