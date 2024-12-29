@@ -199,9 +199,9 @@ public class girisController {
         popupLayout.setVgap(10);
 
         // Components for the popup
-        Label hastaTCLabel = new Label("Hasta TC:");
-        TextField hastaTCField = new TextField();
-        hastaTCField.setPromptText("Hasta TC");
+        Label TCLabel = new Label("Hasta TC:");
+        TextField TCField = new TextField();
+        TCField.setPromptText("Hasta TC");
 
         Label emailLabel = new Label("E-posta:");
         TextField emailField = new TextField();
@@ -218,13 +218,13 @@ public class girisController {
         Button kaydetButton = new Button("Kaydet");
         kaydetButton.setOnAction(event -> {
             // Retrieve input values
-            String hastaTC = hastaTCField.getText();
+            String TC = TCField.getText();
             String email = emailField.getText();
             String yeniSifre = yeniSifreField.getText();
             String tekrarYeniSifre = tekrarYeniSifreField.getText();
 
             // Validate the inputs
-            if (hastaTC.isEmpty() || email.isEmpty() || yeniSifre.isEmpty() || tekrarYeniSifre.isEmpty()) {
+            if (TC.isEmpty() || email.isEmpty() || yeniSifre.isEmpty() || tekrarYeniSifre.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Lütfen tüm alanları doldurun!");
                 alert.show();
@@ -239,7 +239,7 @@ public class girisController {
             }
 
             // Fetch the user by TC and email
-            String userId = getUserIdByTCAndEmail(hastaTC, email);
+            String userId = getUserIdByTCAndEmail(TC, email);
             if (userId == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Kullanıcı bulunamadı!");
@@ -260,8 +260,8 @@ public class girisController {
             }
         });
 
-        popupLayout.add(hastaTCLabel, 0, 0);
-        popupLayout.add(hastaTCField, 1, 0);
+        popupLayout.add(TCLabel, 0, 0);
+        popupLayout.add(TCField, 1, 0);
         popupLayout.add(emailLabel, 0, 1);
         popupLayout.add(emailField, 1, 1);
         popupLayout.add(yeniSifreLabel, 0, 2);
@@ -296,7 +296,7 @@ public class girisController {
 
     }
 
-    String getUserIdByTCAndEmail(String hastaTc, String email) {
+    String getUserIdByTCAndEmail(String TC, String email) {
         String userId = null;
         String sql = "SELECT user_id FROM users " +
                 "WHERE tc_number = ? " +
@@ -305,7 +305,7 @@ public class girisController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, hastaTc);
+            pstmt.setString(1, TC);
             pstmt.setString(2, email);
 
             ResultSet rs = pstmt.executeQuery();
