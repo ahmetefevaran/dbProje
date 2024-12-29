@@ -22,6 +22,7 @@ import org.example.db_project.Appointment;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -244,8 +245,8 @@ public class doktorAnaSayfaController {
     }
 
     void setYaklasanRandevular() {
-        String sql = "SELECT * FROM patientAppointments " +
-                "WHERE patient_id = ? " +
+        String sql = "SELECT * FROM doctorAppointments " +
+                "WHERE doctor_id = ? " +
                 "AND status = 'planned' " +
                 "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2";
 
@@ -552,7 +553,7 @@ public class doktorAnaSayfaController {
         LocalDate baslangic_date = tahlilBaslangicTarihInput.getValue();
 
 
-        String sql = "SELECT t.name AS analysis_name, t.date, t.sonuc, u.name AS patient_name " +
+        String sql = "SELECT t.name AS analysis_name, t.date, t.result, u.name AS patient_name " +
                 "FROM analysis t " +
                 "JOIN patients p ON p.patient_id = t.patient_id " +
                 "JOIN doctors d ON t.doctor_id = d.doctor_id " +
@@ -586,7 +587,7 @@ public class doktorAnaSayfaController {
             while (rs.next()) {
                 String testName = rs.getString("analysis_name");
                 String testDate = rs.getString("date");
-                String testResult = rs.getString("sonuc");
+                String testResult = rs.getString("result");
                 String patientName = rs.getString("patient_name");
 
                 liste.add(new TestResults(testName, testDate, testResult,null, patientName));
@@ -603,6 +604,196 @@ public class doktorAnaSayfaController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    void panel_duzenle_button_onaction(ActionEvent event) {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Profil Düzenle");
+
+        GridPane popupLayout = new GridPane();
+        popupLayout.setPadding(new Insets(10));
+        popupLayout.setHgap(10);
+        popupLayout.setVgap(10);
+
+
+        Label telefonLabel = new Label("Telefon No:");
+        TextField telefonField = new TextField();
+        telefonField.setPromptText("Telefon No (10 Haneli)");
+
+        Label emailLabel = new Label("E-posta:");
+        TextField emailField = new TextField();
+        emailField.setPromptText("E-posta");
+
+        Button kaydetButton = new Button("Kaydet");
+        kaydetButton.setOnAction(e -> {
+
+            String telefon = telefonField.getText();
+            String email = emailField.getText();
+
+            boolean isUpdated = false;
+
+
+            if (!telefon.isEmpty()) {
+                if (!telefon.matches("\\d{10}") || telefon.startsWith("0")) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Telefon numarası 10 haneli olmalı ve başında '0' olmamalıdır!");
+                    alert.show();
+                    return;
+                }
+                System.out.println("Telefon güncelleniyor: " + telefon);
+                isUpdated = updateTelefon(telefon);
+
+            }
+
+            if (!email.isEmpty()) {
+                System.out.println("E-posta güncelleniyor: " + email);
+                isUpdated = updateEmail(email);
+
+            }
+
+            // Feedback to user
+            if (isUpdated) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Profil başarıyla güncellendi!");
+                alert.show();
+                update_yan_panel();
+                popupStage.close();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Herhangi bir değişiklik yapılmadı.");
+                alert.show();
+            }
+        });
+
+        popupLayout.add(telefonLabel, 0, 1);
+        popupLayout.add(telefonField, 1, 1);
+        popupLayout.add(emailLabel, 0, 2);
+        popupLayout.add(emailField, 1, 2);
+        popupLayout.add(kaydetButton, 1, 3);
+
+        Scene popupScene = new Scene(popupLayout, 400, 250);
+        popupStage.setScene(popupScene);
+        popupStage.showAndWait();
+    }
+
+    private boolean updateAddress(String address) {
+
+        String sql = "UPDATE doctors SET address = ? WHERE user_id = ?";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, address);
+            pstmt.setInt(2, Integer.parseInt(sesion_user_id));
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Adres başarıyla güncellendi.");
+                return true;
+            } else {
+                System.out.println("Kullanıcı bulunamadı veya adres güncellenemedi.");
+                return false;
+            }
+
+        } catch (Exception er) {
+            er.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean updateTelefon(String telefon) {
+
+        String sql = "UPDATE doctors SET phone = ? WHERE user_id = ?";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, telefon);
+            pstmt.setInt(2, Integer.parseInt(sesion_user_id));
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Telefon başarıyla güncellendi.");
+                return true;
+            } else {
+                System.out.println("Kullanıcı bulunamadı veya telefon güncellenemedi.");
+                return false;
+            }
+
+        } catch (Exception er) {
+            er.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean updateEmail(String email) {
+
+        String sql = "UPDATE users SET email = ? WHERE user_id = ?";
+
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            pstmt.setInt(2, Integer.parseInt(sesion_user_id));
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("E-posta başarıyla güncellendi.");
+                return true;
+            } else {
+                System.out.println("Kullanıcı bulunamadı veya E-posta güncellenemedi.");
+                return false;
+            }
+
+        } catch (Exception er) {
+            er.printStackTrace();
+            return false;
+        }
+    }
+
+    void update_yan_panel() {
+        try (Connection conn = connectToDatabase()) {
+            String sql = "SELECT * FROM doctorprofile WHERE user_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                int userId = Integer.parseInt(sesion_user_id);
+                pstmt.setInt(1, userId);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                // Eğer sonuç varsa bilgileri atama yap
+                if (rs.next()) {
+                    String fullName = rs.getString("name");
+                    String[] nameParts = fullName.split(" ");
+
+                    String firstName = nameParts[0];
+                    panel_doktor_ad_label.setText(firstName);
+
+                    String lastName = nameParts[nameParts.length - 1];
+                    panel_doktor_soyad_label.setText(lastName);
+
+                    panel_email.setText(rs.getString("email"));
+                    panel_tel_no.setText(rs.getString("phone"));
+                    panel_cinsiyet.setText(rs.getString("gender"));
+                    panel_doktor_tc_label.setText(rs.getString("tc_number"));
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+                } else {
+                    System.out.println("Hasta bilgisi bulunamadı.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        setYaklasanRandevular();
+    }
+
 
 
     @FXML

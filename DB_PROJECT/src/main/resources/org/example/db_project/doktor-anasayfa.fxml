@@ -228,7 +228,7 @@
                                     </HBox>
                                     <HBox prefHeight="52.0" prefWidth="400.0">
                                        <children>
-                                          <Button fx:id="panel_duzenle_button" mnemonicParsing="false" prefHeight="35.0" prefWidth="175.0" text="DÜZENLE">
+                                          <Button fx:id="panel_duzenle_button" mnemonicParsing="false" onAction="#panel_duzenle_button_onaction" prefHeight="35.0" prefWidth="175.0" text="DÜZENLE">
                                              <HBox.margin>
                                                 <Insets left="15.0" top="10.0" />
                                              </HBox.margin>
