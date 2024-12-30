@@ -402,8 +402,8 @@ public class doktorAnaSayfaController {
 
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
-        String user = "1";
-        String password = "1";
+        String user = "doctor";
+        String password = "doctor";
         Connection conn = DriverManager.getConnection(url, user, password);
         return conn;
     }

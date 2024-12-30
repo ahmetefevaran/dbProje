@@ -19,14 +19,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.db_project.HelloApplication;
-import org.example.db_project.UserSession;
 
 public class girisController {
 
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
-        String user = "1";
-        String password = "1";
+        String user = "admin";
+        String password = "admin";
         Connection con = DriverManager.getConnection(url, user, password);
         return con;
     }
@@ -187,18 +186,15 @@ public class girisController {
 
     @FXML
     private void sifremi_unuttum_button_clickked() {
-        // Create a new stage for the popup
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with the main window
         popupStage.setTitle("Şifremi Unuttum");
 
-        // Layout for the popup
         GridPane popupLayout = new GridPane();
         popupLayout.setPadding(new Insets(10));
         popupLayout.setHgap(10);
         popupLayout.setVgap(10);
 
-        // Components for the popup
         Label hastaTCLabel = new Label("Hasta TC:");
         TextField hastaTCField = new TextField();
         hastaTCField.setPromptText("Hasta TC");
@@ -217,13 +213,11 @@ public class girisController {
 
         Button kaydetButton = new Button("Kaydet");
         kaydetButton.setOnAction(event -> {
-            // Retrieve input values
             String hastaTC = hastaTCField.getText();
             String email = emailField.getText();
             String yeniSifre = yeniSifreField.getText();
             String tekrarYeniSifre = tekrarYeniSifreField.getText();
 
-            // Validate the inputs
             if (hastaTC.isEmpty() || email.isEmpty() || yeniSifre.isEmpty() || tekrarYeniSifre.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Lütfen tüm alanları doldurun!");
@@ -238,7 +232,6 @@ public class girisController {
                 return;
             }
 
-            // Fetch the user by TC and email
             String userId = getUserIdByTCAndEmail(hastaTC, email);
             if (userId == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -247,7 +240,6 @@ public class girisController {
                 return;
             }
 
-            // Update the user's password
             if (updateUserPassword(userId, yeniSifre)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Şifreniz başarıyla güncellendi!");

@@ -34,8 +34,8 @@ import java.util.Optional;
 public class hastaAnasayfaController {
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
-        String user = "1";
-        String password = "1";
+        String user = "patient";
+        String password = "patient";
         Connection con = DriverManager.getConnection(url, user, password);
         return con;
     }
@@ -230,8 +230,8 @@ public class hastaAnasayfaController {
                 };
             }
         });
-        updateRandevulariYonet();
 
+        updateRandevulariYonet();
         assert randevu_yonet_ara_button != null : "fx:id=\"ara_button\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_basla_tarih != null : "fx:id=\"randevu_basla_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert randevu_bitis_tarih != null : "fx:id=\"randevu_bitis_tarih\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
@@ -267,6 +267,8 @@ public class hastaAnasayfaController {
         assert recetelerim_tableView != null : "fx:id=\"recetelerim_tableView\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
         assert recetelerim_tarihColumn != null : "fx:id=\"recetelerim_tarihColumn\" was not injected: check your FXML file 'hasta-anasayfa.fxml'.";
 
+
+        update_past_appointments_status();
     }
 
 
@@ -303,7 +305,6 @@ public class hastaAnasayfaController {
 
             ResultSet rs = pstmt.executeQuery();
 
-            // Sadece doctor_id ve user_id bilgilerini tutacak liste
             ObservableList<Doctors> liste = FXCollections.observableArrayList();
 
             while (rs.next()) {
@@ -311,14 +312,11 @@ public class hastaAnasayfaController {
                 String userId = rs.getString("user_id");
                 String userName = rs.getString("name");
 
-                // Doctor nesnesi oluşturuyoruz
                 Doctors doktor = new Doctors(doctorId, userId, userName);
 
-                // Listeye ekliyoruz
                 liste.add(doktor);
             }
 
-            // Listeyi doktor_combobox'a ayarlıyoruz
             doktor_combobox.setItems(liste);
 
         } catch (Exception e) {
@@ -413,11 +411,9 @@ public class hastaAnasayfaController {
 
     @FXML
     void randevu_sorgu_table_clicked(MouseEvent event) {
-        // Seçili randevuyu al
         Appointment selectedAppointment = randevu_sorgu_table.getSelectionModel().getSelectedItem();
 
         if (selectedAppointment != null) {
-            // Popup oluştur
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Randevu Ayrıntıları");
             alert.setHeaderText("Randevunun Detayları:");
@@ -429,12 +425,10 @@ public class hastaAnasayfaController {
                             "Bu randevuyu almak istediğinize emin misiniz ?"
             );
 
-            // Buton seçeneklerini ekle
             ButtonType yesButton = new ButtonType("Evet", ButtonBar.ButtonData.OK_DONE);
             ButtonType cancelButton = new ButtonType("İptal", ButtonBar.ButtonData.CANCEL_CLOSE);
             alert.getButtonTypes().setAll(yesButton, cancelButton);
 
-            // Kullanıcının seçimini al
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == yesButton) {
@@ -442,7 +436,6 @@ public class hastaAnasayfaController {
 
 
                 if (sesion_patient_id != null) {
-                    // Appointment eklemek için SQL
                     String sqlInsertAppointment = "INSERT INTO public.appointments (" +
                             "doctor_id, patient_id, appointment_date, appointment_time, status, created_at) " +
                             "VALUES (?, ?, ?, ?, ?, ?)";
@@ -457,12 +450,12 @@ public class hastaAnasayfaController {
                         Date appointmentDate = Date.valueOf(appointmentDateStr);
                         Time appointmentTime = Time.valueOf(appointmentTimeStr);
 
-                        pstmt.setInt(1, Integer.parseInt(selectedAppointment.getDoctor_id())); // doctor_id
-                        pstmt.setInt(2, Integer.parseInt(sesion_patient_id)); // patient_id
-                        pstmt.setDate(3, appointmentDate);  // appointment_date
-                        pstmt.setTime(4, appointmentTime);  // appointment_time
-                        pstmt.setString(5, "planned"); // status (default planned)
-                        pstmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now())); // created_at
+                        pstmt.setInt(1, Integer.parseInt(selectedAppointment.getDoctor_id()));
+                        pstmt.setInt(2, Integer.parseInt(sesion_patient_id));
+                        pstmt.setDate(3, appointmentDate);
+                        pstmt.setTime(4, appointmentTime);
+                        pstmt.setString(5, "planned");
+                        pstmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
 
                         pstmt.executeUpdate();
 
@@ -513,7 +506,7 @@ public class hastaAnasayfaController {
     }
 
     void sifirla() {
-
+        update_past_appointments_status();
         randevu_sorgu_baslangic_date.setValue(null);
         randevu_sorgu_baslangic_date.setPromptText("-FARK ETMEZ-");
 
@@ -546,6 +539,7 @@ public class hastaAnasayfaController {
 
 
     void updateRandevulariYonet() {
+        update_past_appointments_status();
         String doktorAdi = randevular_doktor_adi.getText();
         LocalDate baslangic_date = randevu_basla_tarih.getValue();
         LocalDate bitis_date = randevu_bitis_tarih.getValue();
@@ -568,19 +562,19 @@ public class hastaAnasayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
 
-            int index = 2; // Start from the 3rd parameter
+            int index = 2;
             if (doktorAdi != null && !doktorAdi.isEmpty()) {
-                pstmt.setString(index++, "%" + doktorAdi + "%"); // Doctor name (LIKE)
+                pstmt.setString(index++, "%" + doktorAdi + "%");
             }
             if (baslangic_date != null && bitis_date != null) {
-                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
-                pstmt.setDate(index++, Date.valueOf(bitis_date)); // End date
+                pstmt.setDate(index++, Date.valueOf(baslangic_date));
+                pstmt.setDate(index++, Date.valueOf(bitis_date));
             } else if (baslangic_date != null) {
-                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
+                pstmt.setDate(index++, Date.valueOf(baslangic_date));
             } else if (bitis_date != null) {
-                pstmt.setDate(index++, Date.valueOf(bitis_date)); // End date
+                pstmt.setDate(index++, Date.valueOf(bitis_date));
             }
 
             ResultSet rs = pstmt.executeQuery();
@@ -612,6 +606,7 @@ public class hastaAnasayfaController {
     }
 
     void updateReceteler() {
+        update_past_appointments_status();
         String doktorAdi = recetelerim_arama_kismi.getText();
         LocalDate baslangic_date = recetelerim_basla_tarih.getValue();
 
@@ -633,14 +628,14 @@ public class hastaAnasayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, Integer.parseInt(sesion_patient_id)); // Patient ID
+            pstmt.setInt(1, Integer.parseInt(sesion_patient_id));
 
-            int index = 2; // Start from the 2nd parameter
+            int index = 2;
             if (doktorAdi != null && !doktorAdi.isEmpty()) {
-                pstmt.setString(index++, "%" + doktorAdi + "%"); // Doctor name (LIKE)
+                pstmt.setString(index++, "%" + doktorAdi + "%");
             }
             if (baslangic_date != null) {
-                pstmt.setDate(index++, Date.valueOf(baslangic_date)); // Start date
+                pstmt.setDate(index++, Date.valueOf(baslangic_date));
             }
 
             ResultSet rs = pstmt.executeQuery();
@@ -668,6 +663,7 @@ public class hastaAnasayfaController {
     }
 
     void updateTahlil() {
+        update_past_appointments_status();
         String tahlilAdi = tahlil_arama_kismi.getText();
         LocalDate baslangic_date = tahlil_basla_tarih.getValue();
 
@@ -842,7 +838,6 @@ public class hastaAnasayfaController {
 
             }
 
-            // Feedback to user
             if (isUpdated) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Profil başarıyla güncellendi!");
@@ -987,6 +982,19 @@ public class hastaAnasayfaController {
         }
 
         setYaklasanRandevular();
+    }
+
+
+    void update_past_appointments_status() {
+        String sql = "CALL public.update_past_appointments_status()";
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
