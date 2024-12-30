@@ -11,6 +11,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -266,6 +267,10 @@ public class hastaAnasayfaController {
 
 
         update_past_appointments_status();
+
+        //Image ekleme
+        Image image = new Image(getClass().getResourceAsStream("/userImages/"+sesion_user_id+".jpg"));
+        panel_hasta_image.setImage(image);
     }
 
 

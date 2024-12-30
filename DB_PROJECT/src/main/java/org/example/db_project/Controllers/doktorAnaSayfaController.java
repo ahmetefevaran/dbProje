@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -193,7 +194,7 @@ public class doktorAnaSayfaController {
     private Label panel_email;
 
     @FXML
-    private ImageView panel_hasta_image;
+    private ImageView panel_doktor_image;
 
     @FXML
     private Label panel_tel_no;
@@ -209,7 +210,7 @@ public class doktorAnaSayfaController {
     final String sesion_user_id = HelloApplication.userSession.getSesionUserId();
     final String sesion_doctor_id = HelloApplication.userSession.getSesionDoctorId();
 
-    //Functions
+
     private String getPatientIdByTC(String tcNumber) {
         String sql = "SELECT p.patient_id FROM patients p " +
                 "JOIN users u ON u.user_id = p.user_id " +
@@ -224,7 +225,7 @@ public class doktorAnaSayfaController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Return null if no patient found
+        return null;
     }
 
     private boolean insertPrescription(String patientId, String medicationName, String dosage) {
@@ -232,7 +233,7 @@ public class doktorAnaSayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, Integer.parseInt(patientId));
-            pstmt.setInt(2, Integer.parseInt(sesion_doctor_id)); // Replace with the correct doctor ID
+            pstmt.setInt(2, Integer.parseInt(sesion_doctor_id));
             pstmt.setString(3, medicationName);
             pstmt.setInt(4, Integer.parseInt(dosage));
             pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
@@ -253,46 +254,41 @@ public class doktorAnaSayfaController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, Integer.parseInt(sesion_doctor_id)); // Patient ID
+            pstmt.setInt(1, Integer.parseInt(sesion_doctor_id));
             ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                String doctor_name = rs.getString("doctor_name");
-                String appointmentDate = rs.getString("appointment_date");
-                String appointmentTime = rs.getString("appointment_time");
-                String specialization = rs.getString("specialization");
+            panel_yaklasan_randevular_vbox.getChildren().clear();
 
-                // Tarih, doktor ve klinik bilgilerini 3 ayrı label olarak ayırıyoruz
-                String time = appointmentTime.substring(0, 5);
-                String dateText = appointmentDate + " " + time;
-                String doctorText = doctor_name;
-                String specializationText = specialization;
+            if (!rs.next()) {
+                Label noAppointmentsLabel = new Label("Yaklaşan randevunuz bulunmamaktadır.");
+                noAppointmentsLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
+                panel_yaklasan_randevular_vbox.getChildren().add(noAppointmentsLabel);
+            } else {
+                do {
+                    String doctor_name = rs.getString("doctor_name");
+                    String appointmentDate = rs.getString("appointment_date");
+                    String appointmentTime = rs.getString("appointment_time");
 
-                // HBox içinde her label'ı yan yana hizalayacağız
-                HBox hbox = new HBox();
-                hbox.setSpacing(10); // Aralarına boşluk ekler
-                hbox.setAlignment(Pos.CENTER_LEFT); // Sağ üst hizalama
+                    String time = appointmentTime.substring(0, 5);
+                    String dateText = appointmentDate + " " + time;
+                    String doctorText = doctor_name;
 
-                // HBox'a border ekliyoruz
-                hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
+                    HBox hbox = new HBox();
+                    hbox.setSpacing(10);
+                    hbox.setAlignment(Pos.CENTER_LEFT);
 
-                // Date Label
-                Label dateLabel = new Label(dateText);
-                dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    hbox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f5f5f5; -fx-border-radius: 5px;");
 
-                // Doctor Label
-                Label doctorLabel = new Label(doctorText);
-                doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    Label dateLabel = new Label(dateText);
+                    dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                // Specialization Label
-                Label specializationLabel = new Label(specializationText);
-                specializationLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
+                    Label doctorLabel = new Label(doctorText);
+                    doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                // HBox'a Label'ları ekle
-                hbox.getChildren().addAll(dateLabel, doctorLabel, specializationLabel);
 
-                // VBox'a HBox'ı ekle
-                panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+                    hbox.getChildren().addAll(dateLabel, doctorLabel);
+                    panel_yaklasan_randevular_vbox.getChildren().add(hbox);
+                } while (rs.next());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,18 +312,17 @@ public class doktorAnaSayfaController {
 
     @FXML
     private void showPopup() {
-        // Create a new stage for the popup
+
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with the main window
         popupStage.setTitle("Yeni Reçete Ekle");
 
-        // Layout for the popup
         GridPane popupLayout = new GridPane();
         popupLayout.setPadding(new Insets(10));
         popupLayout.setHgap(10);
         popupLayout.setVgap(10);
 
-        // Components for the popup
+
         Label hastaTCLabel = new Label("Hasta TC:");
         TextField hastaTCField = new TextField();
         hastaTCField.setPromptText("Hasta TC");
@@ -343,7 +338,7 @@ public class doktorAnaSayfaController {
 
         Button kaydetButton = new Button("Kaydet");
         kaydetButton.setOnAction(event -> {
-            // Retrieve input values
+
             String hastaTC = hastaTCField.getText();
             System.out.println(hastaTC);
             String ilacAdi = ilacAdiComboBox.getValue();
@@ -356,7 +351,6 @@ public class doktorAnaSayfaController {
                 return;
             }
 
-            // Fetch the patient_id using hastaTC
             String patientId = getPatientIdByTC(hastaTC);
             if (patientId == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -365,7 +359,6 @@ public class doktorAnaSayfaController {
                 return;
             }
 
-            // Insert the prescription
             if (insertPrescription(patientId, ilacAdi, doz)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Reçete başarıyla kaydedildi!");
@@ -380,7 +373,6 @@ public class doktorAnaSayfaController {
             updateReceteler();
         });
 
-        // Add components to the popup layout
         popupLayout.add(hastaTCLabel, 0, 0);
         popupLayout.add(hastaTCField, 1, 0);
         popupLayout.add(ilacAdiLabel, 0, 1);
@@ -389,7 +381,6 @@ public class doktorAnaSayfaController {
         popupLayout.add(dozField, 1, 2);
         popupLayout.add(kaydetButton, 1, 3);
 
-        // Set the scene and show the popup
         Scene popupScene = new Scene(popupLayout, 300, 200);
         popupStage.setScene(popupScene);
         popupStage.showAndWait();
@@ -431,7 +422,6 @@ public class doktorAnaSayfaController {
                 String appointmentTime = rs.getString("appointment_time");
                 String status = rs.getString("status");
 
-                // Appointment nesnesi oluştur ve listeye ekle
                 liste.add(new Appointment(id,null,patientName, appointmentDate, appointmentTime,null,status, sesion_user_id));
             }
             randevuYonetTable.setItems(liste);
@@ -635,6 +625,7 @@ public class doktorAnaSayfaController {
 
 
             if (!telefon.isEmpty()) {
+                System.out.println("aa");
                 if (!telefon.matches("\\d{10}") || telefon.startsWith("0")) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("Telefon numarası 10 haneli olmalı ve başında '0' olmamalıdır!");
@@ -652,7 +643,6 @@ public class doktorAnaSayfaController {
 
             }
 
-            // Feedback to user
             if (isUpdated) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Profil başarıyla güncellendi!");
@@ -677,31 +667,7 @@ public class doktorAnaSayfaController {
         popupStage.showAndWait();
     }
 
-    private boolean updateAddress(String address) {
 
-        String sql = "UPDATE doctors SET address = ? WHERE user_id = ?";
-
-        try (Connection conn = connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, address);
-            pstmt.setInt(2, Integer.parseInt(sesion_user_id));
-
-            int rowsAffected = pstmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Adres başarıyla güncellendi.");
-                return true;
-            } else {
-                System.out.println("Kullanıcı bulunamadı veya adres güncellenemedi.");
-                return false;
-            }
-
-        } catch (Exception er) {
-            er.printStackTrace();
-            return false;
-        }
-    }
 
     private boolean updateTelefon(String telefon) {
 
@@ -838,6 +804,10 @@ public class doktorAnaSayfaController {
                 "all"
         );
         randevularTamamlanmaDurumuInput.setItems(options);
+
+        //Image ekleme
+        Image image = new Image(getClass().getResourceAsStream("/userImages/"+sesion_user_id+".jpg"));
+        panel_doktor_image.setImage(image);
 
         try (Connection conn = connectToDatabase()) {
             // SQL sorgusu: `doctorprofile` görünümünden kullanıcı bilgilerini al

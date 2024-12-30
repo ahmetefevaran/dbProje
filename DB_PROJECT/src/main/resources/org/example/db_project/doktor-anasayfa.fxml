@@ -130,7 +130,7 @@
                                  <children>
                                     <HBox prefHeight="120.0" prefWidth="200.0">
                                        <children>
-                                          <ImageView fx:id="panel_hasta_image" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="panel_doktor_image" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                              <HBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </HBox.margin>
@@ -254,16 +254,21 @@
                            <children>
                               <VBox prefHeight="720.0" prefWidth="400.0">
                                  <children>
-                                    <VBox fx:id="panel_yaklasan_randevular_vbox" prefHeight="100.0" prefWidth="400.0">
+                                    <VBox prefHeight="720.0" prefWidth="400.0">
                                        <children>
-                                          <Label prefHeight="50.0" prefWidth="200.0" text="Yaklaşan Randevular">
-                                             <font>
-                                                <Font name="System Bold" size="18.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                             </VBox.margin>
-                                          </Label>
+                                          <VBox prefHeight="100.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="50.0" prefWidth="200.0" text="Yaklaşan Randevular">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <VBox fx:id="panel_yaklasan_randevular_vbox" prefHeight="100.0" prefWidth="400.0" />
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </VBox>
                                  </children>
