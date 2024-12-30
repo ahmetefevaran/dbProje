@@ -24,8 +24,8 @@ public class girisController {
 
     Connection connectToDatabase() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/proje";
-        String user = "admin";
-        String password = "admin";
+        String user = "1";
+        String password = "1";
         Connection con = DriverManager.getConnection(url, user, password);
         return con;
     }
@@ -252,8 +252,8 @@ public class girisController {
             }
         });
 
-        popupLayout.add(hastaTCLabel, 0, 0);
-        popupLayout.add(hastaTCField, 1, 0);
+        popupLayout.add(TCLabel, 0, 0);
+        popupLayout.add(TCField, 1, 0);
         popupLayout.add(emailLabel, 0, 1);
         popupLayout.add(emailField, 1, 1);
         popupLayout.add(yeniSifreLabel, 0, 2);
@@ -288,7 +288,7 @@ public class girisController {
 
     }
 
-    String getUserIdByTCAndEmail(String hastaTc, String email) {
+    String getUserIdByTCAndEmail(String TC, String email) {
         String userId = null;
         String sql = "SELECT user_id FROM users " +
                 "WHERE tc_number = ? " +
@@ -297,7 +297,7 @@ public class girisController {
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, hastaTc);
+            pstmt.setString(1, TC);
             pstmt.setString(2, email);
 
             ResultSet rs = pstmt.executeQuery();

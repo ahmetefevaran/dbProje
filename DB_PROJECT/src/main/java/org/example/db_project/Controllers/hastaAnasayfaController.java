@@ -145,13 +145,10 @@ public class hastaAnasayfaController {
         // ----- Randevu Sorgu -----
         ObservableList<String> poliklinikler = FXCollections.observableArrayList(
                 "Kardiyoloji",
-                "Ortopedi",
-                "Dahiliye",
+                "Pediatri",
                 "Nöroloji",
-                "Üroloji",
-                "Göz Hastalıkları",
-                "Kulak Burun Boğaz",
-                "Dermatoloji"
+                "Dahiliye",
+                "Ortopedi"
         );
         poliklinik_combobox.setItems(poliklinikler);
 
@@ -547,7 +544,7 @@ public class hastaAnasayfaController {
         String sql = "SELECT * FROM patientAppointments WHERE patient_id = ? AND status = 'planned'";
 
         if (doktorAdi != null && !doktorAdi.isEmpty()) {
-            sql += "AND doctor_name LIKE ? ";
+            sql += "AND doctor_name ILIKE ? ";
         }
         if (baslangic_date != null && bitis_date != null) {
             sql += "AND appointment_date BETWEEN ? AND ? ";
@@ -618,7 +615,7 @@ public class hastaAnasayfaController {
                 "WHERE p.patient_id = ? ";
 
         if (doktorAdi != null && !doktorAdi.isEmpty()) {
-            sql += "AND pr.medication_name LIKE ? ";
+            sql += "AND pr.medication_name ILIKE ? ";
         }
         if (baslangic_date != null) {
             sql += "AND pr.prescribed_date >= ? ";
@@ -676,7 +673,7 @@ public class hastaAnasayfaController {
                 "WHERE p.patient_id = ? ";
 
         if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
-            sql += "AND t.name LIKE ? ";
+            sql += "AND t.name ILIKE ? ";
         }
         if (baslangic_date != null) {
             sql += "AND t.date >= ? ";

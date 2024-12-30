@@ -414,7 +414,7 @@ public class doktorAnaSayfaController {
         String hastaAdi = randevuYonetHastaAdInput.getText();
         LocalDate selectedDate = randevuYonetbaslangicTarihInput.getValue();
 
-        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name LIKE ? AND appointment_date >= ? AND status = 'planned'";
+        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name ILIKE ? AND appointment_date >= ? AND status = 'planned'";
         try (Connection conn =connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             if (selectedDate == null) selectedDate = LocalDate.now();
@@ -448,7 +448,7 @@ public class doktorAnaSayfaController {
         LocalDate selectedDate = randevularBaslangicTarihInput.getValue();
         String statusInput = (String) randevularTamamlanmaDurumuInput.getValue();
 
-        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name LIKE ? "+ (statusInput != null && !statusInput.equals("all") ?  "AND status = ?" : "") +
+        String sql = "SELECT * FROM doctorAppointments WHERE doctor_id = ? AND patient_name ILIKE ? "+ (statusInput != null && !statusInput.equals("all") ?  "AND status = ?" : "") +
                 (selectedDate != null ? " AND appointment_date >= ?" : "");
         try (Connection conn =connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -493,7 +493,7 @@ public class doktorAnaSayfaController {
                 "FROM prescriptions pr " +
                 "JOIN patients p ON pr.patient_id = p.patient_id " +
                 "JOIN users u ON p.user_id = u.user_id " +
-                "WHERE u.name LIKE ? " +
+                "WHERE u.name ILIKE ? " +
                 (selectedDate != null ? "AND pr.prescribed_date >= ?" : "");
 
         try (Connection conn =connectToDatabase();
@@ -561,7 +561,7 @@ public class doktorAnaSayfaController {
                 "WHERE d.doctor_id = ? ";
 
         if (tahlilAdi != null && !tahlilAdi.isEmpty()) {
-            sql += "AND t.name LIKE ? ";
+            sql += "AND t.name ILIKE ? ";
         }
         if (baslangic_date != null) {
             sql += "AND t.date >= ? ";
@@ -793,7 +793,6 @@ public class doktorAnaSayfaController {
 
         setYaklasanRandevular();
     }
-
 
 
     @FXML
