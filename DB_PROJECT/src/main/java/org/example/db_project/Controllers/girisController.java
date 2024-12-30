@@ -195,9 +195,9 @@ public class girisController {
         popupLayout.setHgap(10);
         popupLayout.setVgap(10);
 
-        Label hastaTCLabel = new Label("Hasta TC:");
-        TextField hastaTCField = new TextField();
-        hastaTCField.setPromptText("Hasta TC");
+        Label TCLabel = new Label("Hasta TC:");
+        TextField TCField = new TextField();
+        TCField.setPromptText("Hasta TC");
 
         Label emailLabel = new Label("E-posta:");
         TextField emailField = new TextField();
@@ -213,7 +213,7 @@ public class girisController {
 
         Button kaydetButton = new Button("Kaydet");
         kaydetButton.setOnAction(event -> {
-            String hastaTC = hastaTCField.getText();
+            String hastaTC = TCField.getText();
             String email = emailField.getText();
             String yeniSifre = yeniSifreField.getText();
             String tekrarYeniSifre = tekrarYeniSifreField.getText();
