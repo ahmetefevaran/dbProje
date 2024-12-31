@@ -249,7 +249,7 @@ public class doktorAnaSayfaController {
         String sql = "SELECT * FROM doctorAppointments " +
                 "WHERE doctor_id = ? " +
                 "AND status = 'planned' " +
-                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2";
+                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2 OR (appointment_date =CURRENT_DATE AND appointment_time > CURRENT_TIME)";
 
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -265,13 +265,13 @@ public class doktorAnaSayfaController {
                 panel_yaklasan_randevular_vbox.getChildren().add(noAppointmentsLabel);
             } else {
                 do {
-                    String doctor_name = rs.getString("doctor_name");
+                    String patient_name = rs.getString("patient_name");
                     String appointmentDate = rs.getString("appointment_date");
                     String appointmentTime = rs.getString("appointment_time");
 
                     String time = appointmentTime.substring(0, 5);
                     String dateText = appointmentDate + " " + time;
-                    String doctorText = doctor_name;
+                    String patientText = patient_name;
 
                     HBox hbox = new HBox();
                     hbox.setSpacing(10);
@@ -282,7 +282,7 @@ public class doktorAnaSayfaController {
                     Label dateLabel = new Label(dateText);
                     dateLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
-                    Label doctorLabel = new Label(doctorText);
+                    Label doctorLabel = new Label(patientText);
                     doctorLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10;");
 
 
@@ -401,7 +401,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void randevuYonetAraButtonAction(ActionEvent event) {
-
+        update_past_appointments_status();
         String hastaAdi = randevuYonetHastaAdInput.getText();
         LocalDate selectedDate = randevuYonetbaslangicTarihInput.getValue();
 
@@ -433,7 +433,7 @@ public class doktorAnaSayfaController {
 
     @FXML
     void randevularAraButtonAction() {
-
+        update_past_appointments_status();
         String hastaAdi = randevularHastaAdInput.getText();
         LocalDate selectedDate = randevularBaslangicTarihInput.getValue();
         String statusInput = (String) randevularTamamlanmaDurumuInput.getValue();
@@ -760,6 +760,18 @@ public class doktorAnaSayfaController {
         setYaklasanRandevular();
     }
 
+    void update_past_appointments_status() {
+        String sql = "CALL public.update_past_appointments_status()";
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     void initialize() {
@@ -899,6 +911,7 @@ public class doktorAnaSayfaController {
 
                             updateRandevuYonet();
                             updateRandevular();
+                            setYaklasanRandevular();
 
                         });
                     }

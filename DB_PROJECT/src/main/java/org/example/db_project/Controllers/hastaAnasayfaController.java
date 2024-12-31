@@ -469,7 +469,8 @@ public class hastaAnasayfaController {
                         info_alert.getButtonTypes().setAll(yesButton);
                         info_alert.showAndWait();
 
-
+                        updateRandevulariYonet();
+                        setYaklasanRandevular();
                         sifirla();
 
                     } catch (SQLException e) {
@@ -732,7 +733,7 @@ public class hastaAnasayfaController {
         String sql = "SELECT * FROM patientAppointments " +
                 "WHERE patient_id = ? " +
                 "AND status = 'planned' " +
-                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2";
+                "AND appointment_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 2 OR (appointment_date =CURRENT_DATE AND appointment_time > CURRENT_TIME)";
 
         try (Connection conn = connectToDatabase();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

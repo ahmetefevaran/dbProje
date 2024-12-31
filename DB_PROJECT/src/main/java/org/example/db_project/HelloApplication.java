@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("giris-sayfasi.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 1600, 900);
-        stage.setTitle("Hello!");
+        stage.setTitle("Leton Hastanesi");
         stage.setScene(scene);
         stage.show();
     }
